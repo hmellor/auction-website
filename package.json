@@ -1,0 +1,32 @@
+{
+  "name": "auction-website",
+  "version": "1.0.0",
+  "description": "A website for hosting a silent auction",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "firebase": "^6.5.0",
+    "gulp-terser": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmellor/auction-website.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hmellor/auction-website/issues"
+  },
+  "homepage": "https://github.com/hmellor/auction-website#readme"
+}

@@ -1,0 +1,107 @@
+# -----------------------------------------------------------------
+# .gitignore
+# Bare Minimum Git
+# http://ironco.de/bare-minimum-git/
+# ver 20181206
+#
+# From the root of your project run
+# curl -O https://gist.githubusercontent.com/salcode/10017553/raw/.gitignore
+# to download this file
+#
+# This file is tailored for a general web project, it
+# is NOT optimized for a WordPress project.  See
+# https://gist.github.com/salcode/b515f520d3f8207ecd04
+# for a WordPress specific .gitignore
+#
+# This file specifies intentionally untracked files to ignore
+# http://git-scm.com/docs/gitignore
+#
+# NOTES:
+# The purpose of gitignore files is to ensure that certain files not
+# tracked by Git remain untracked.
+#
+# To ignore uncommitted changes in a file that is already tracked,
+# use `git update-index --assume-unchanged`.
+#
+# To stop tracking a file that is currently tracked,
+# use `git rm --cached`
+#
+# Change Log:
+# 20190705 ignore private/secret files
+# 20181206 remove trailing whitespaces
+# 20180714 unignore .phpcs.xml.dist
+# 20170502 unignore composer.lock
+# 20170502 ignore components loaded via Bower
+# 20150326 ignore jekyll build directory `/_site`
+# 20150324 Reorganized file to list ignores first and whitelisted last,
+#          change WordPress .gitignore link to preferred gist,
+#          add curl line for quick installation
+#          ignore composer files (vendor directory and lock file)
+# 20140606 Add .editorconfig as a tracked file
+# 20140418 remove explicit inclusion
+#          of readme.md (this is not an ignored file by default)
+# 20140407 Initially Published
+#
+# -----------------------------------------------------------------
+
+# ignore all files starting with . or ~
+.*
+~*
+
+# ignore node/grunt dependency directories
+node_modules/
+
+# ignore composer vendor directory
+/vendor
+
+# ignore components loaded via Bower
+/bower_components
+
+# ignore jekyll build directory
+/_site
+
+# ignore OS generated files
+ehthumbs.db
+Thumbs.db
+
+# ignore Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# ignore private/secret files
+*.der
+*.key
+*.pem
+
+# -------------------------
+# BEGIN Whitelisted Files
+# -------------------------
+
+# track these files, if they exist
+!.gitignore
+!.editorconfig
+!.phpcs.xml.dist
