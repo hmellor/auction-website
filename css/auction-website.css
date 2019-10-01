@@ -2,6 +2,41 @@
  * auction-website v1.0.0 (https://github.com/hmellor/auction-website#readme)
  */
 
+.btn-wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 8px;
+  padding: 6px 16px;
+}
+
+.btn-wrapper.with-confirm {
+  width: calc(100% - 32px);
+}
+
+#auctionButtons {
+  position: relative;
+  padding: 0vw 0px;
+  margin-top: 1vw;
+  margin-bottom: 0;
+}
+
+#auctionButtons button {
+  min-width: 0;
+  padding: 0 2vw;
+  font-size: 3vw;
+  height: 6vw;
+  line-height: 6vw;
+}
+
+.bid-button {
+  margin-left: 1vw;
+}
+
+.info-button {
+  margin-right: 1vw;
+}
+
 html * {
   font-family: 'Quicksand', sans-serif;
 }
@@ -104,6 +139,20 @@ h5 {
   color: #002147;
   font-size: 5vw;
   line-height: 1.2;
+}
+
+/* just presenation */
+.center {
+  margin: 0 auto;
+}
+
+.m-t-100 {
+  margin-top: 100px;
+}
+
+.box {
+  height: 300px;
+  padding: 100px;
 }
 
 /* mdl - popup */
@@ -250,53 +299,4 @@ h5 {
 #info-content p {
   margin: 0;
   padding-bottom: 8px;
-}
-
-.btn-wrapper {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin-bottom: 8px;
-  padding: 6px 16px;
-}
-
-.btn-wrapper.with-confirm {
-  width: calc(100% - 32px);
-}
-
-#auctionButtons {
-  position: relative;
-  padding: 0vw 0px;
-  margin-top: 1vw;
-  margin-bottom: 0;
-}
-
-#auctionButtons button {
-  min-width: 0;
-  padding: 0 2vw;
-  font-size: 3vw;
-  height: 6vw;
-  line-height: 6vw;
-}
-
-.bid-button {
-  margin-left: 1vw;
-}
-
-.info-button {
-  margin-right: 1vw;
-}
-
-/* just presenation */
-.center {
-  margin: 0 auto;
-}
-
-.m-t-100 {
-  margin-top: 100px;
-}
-
-.box {
-  height: 300px;
-  padding: 100px;
 }

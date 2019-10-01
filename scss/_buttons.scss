@@ -1,0 +1,34 @@
+.btn-wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 8px;
+  padding: 6px 16px;
+
+  &.with-confirm {
+    width: calc(100% - 32px);
+  }
+}
+
+#auctionButtons {
+  position: relative;
+  padding: 0vw 0px;
+  margin-top: 1vw;
+  margin-bottom: 0;
+
+  button {
+    min-width: 0;
+    padding: 0 2vw;
+    font-size: 3vw;
+    height: 6vw;
+    line-height: 6vw;
+  }
+}
+
+.bid-button {
+  margin-left: 1vw;
+}
+
+.info-button {
+  margin-right: 1vw;
+}

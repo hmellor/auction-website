@@ -24,22 +24,26 @@ const banner = ['/*!\n',
   '\n'
 ].join('');
 
-const paths = {
-  scripts: {
-    src: ['./js/**/*.js', '!./js/**/*.min.js', '!./js/reset.js'],
-    dest: './js/'
+const path = {
+  src: {
+    js: ['./js/**/*.js', '!./js/**/*.min.js', '!./js/reset.js'],
+    css: ['./scss/**/*.scss'],
+    html: './**/*.html'
+  },
+  dest: {
+    js: './js/',
+    css: './css/'
   }
 };
 
-const clean = () => del(['dist']);
-
-function scripts() {
-  return gulp.src(paths.scripts.src, { sourcemaps: true })
+// JS task
+function js() {
+  return gulp.src(path.src.js, { sourcemaps: true })
     .pipe(babel())
     .pipe(terser())
     .pipe(concat('index.min.js'))
     // .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(paths.scripts.dest));
+    .pipe(gulp.dest(path.dest.js));
 }
 
 // CSS task
@@ -64,7 +68,7 @@ function css() {
       suffix: ".min"
     }))
     .pipe(cleanCSS())
-    .pipe(gulp.dest("./css"))
+    .pipe(gulp.dest(path.dest.css))
     .pipe(browsersync.stream());
 }
 
@@ -87,18 +91,17 @@ function browserSyncReload(done) {
 
 // Watch files
 function watchFiles() {
-  gulp.watch("./scss/**/*", css);
-  gulp.watch(["./js/**/*", "!./js/**/*.min.js"], js);
-  gulp.watch("./**/*.html", browserSyncReload);
+  gulp.watch(path.src.css, css);
+  gulp.watch(path.src.js, js);
+  gulp.watch(path.src.html, browserSyncReload);
 }
 
-const build = gulp.parallel(scripts, css)
-const watch = () => gulp.watch(paths.scripts.src.concat(['./css/**/*.css', './index.html']), gulp.series(scripts, browserSyncReload));
-
-const dev = gulp.series(clean, scripts, css, browserSync, watch);
+// Define complex tasks
+const build = gulp.parallel(js, css);
+const watch = gulp.series(build, gulp.parallel(watchFiles, browserSync));
 
 // Export tasks
 exports.default = build;
 exports.build = build;
 exports.css = css;
-exports.watch = dev;
+exports.watch = watch;
