@@ -1,9 +1,9 @@
-/*!
- * auction-website v1.0.0 (https://github.com/hmellor/auction-website#readme)
- */
+/* pink : #fc86a8; */
+/* blue : #002147; */
 
-html * {
-  font-family: 'Quicksand', sans-serif;
+html *
+{
+   font-family: 'Quicksand', sans-serif;
 }
 
 span img {
@@ -15,7 +15,11 @@ span img {
   padding: 0 16px 0 60px;
 }
 
-.mdl-layout__title, .mdl-layout-title {
+.mdl-layout__title {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.mdl-layout-title {
   font-family: 'Quicksand', sans-serif;
 }
 
@@ -28,10 +32,11 @@ img {
 }
 
 @media only screen and (min-width: 1024px) {
-  .mdl-layout__drawer > .mdl-layout-title {
-    padding-left: 20px;
+  .mdl-layout__drawer>.mdl-layout-title {
+      padding-left: 20px;
   }
 }
+
 
 .mdl-checkbox__label {
   color: #002147;
@@ -45,7 +50,6 @@ img {
   width: calc(100% - 216px);
   margin-left: 6px;
 }
-
 .mdl-button {
   color: white;
   font-family: 'Quicksand', sans-serif;
@@ -53,7 +57,7 @@ img {
 }
 
 .mdl-button--primary.mdl-button--primary {
-  color: #fc86a8;
+  color: #fc86a8
 }
 
 .mdl-grid {
@@ -65,7 +69,7 @@ img {
   background-color: #fc86a8;
 }
 
-.auction-card > .mdl-card__title {
+.auction-card>.mdl-card__title {
   color: #002147;
   background-repeat: no-repeat;
   background-size: contain;
@@ -74,7 +78,7 @@ img {
 .auction-timer {
   text-align: center;
   margin-bottom: 12px;
-  line-height: 5vw;
+  line-height:5vw;
 }
 
 .mdl-mini-footer {
@@ -113,8 +117,8 @@ h5 {
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: 5;
-  -webkit-transition: all 600ms cubic-bezier(0.2, 0.965, 0, 1.005);
-  transition: all 600ms cubic-bezier(0.2, 0.965, 0, 1.005);
+  -webkit-transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+  transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
 }
 
 .fab.login-form, .fab.info-page, .fab.bid-form {
@@ -123,9 +127,8 @@ h5 {
   border-radius: 50%;
   top: 100px;
   color: #fff;
-  -webkit-transition: all 600ms cubic-bezier(0.2, 0.965, 0, 1.005);
-  transition: all 600ms cubic-bezier(0.2, 0.965, 0, 1.005);
-  -webkit-animation-direction: alternate;
+  -webkit-transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+  transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
   animation-direction: alternate;
 }
 
@@ -139,7 +142,6 @@ h5 {
   margin-left: -200px;
   width: 400px;
   /* height: 250px; */
-  -webkit-box-shadow: 0 25px 35px 0 rgba(0, 0, 0, 0.35);
   box-shadow: 0 25px 35px 0 rgba(0, 0, 0, 0.35);
 }
 
@@ -154,6 +156,7 @@ h5 {
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-12px, -12px);
+  -ms-transform: translate(-12px, -12px);
   transform: translate(-12px, -12px);
   line-height: 24px;
   width: 24px;
@@ -165,7 +168,12 @@ h5 {
 }
 
 @media only screen and (max-width: 480px) {
-  .fab.active, .fab.bid-form.active {
+  .fab.active {
+    width: 100%;
+    left: 0;
+    margin-left: 0;
+  }
+  .fab.bid-form.active {
     width: 100%;
     left: 0;
     margin-left: 0;
@@ -213,18 +221,13 @@ h5 {
 .mdl-icon-toggle__label {
   float: right;
   margin-top: -30px;
-  color: rgba(0, 0, 0, 0.4);
-  -webkit-transform: rotate(0);
+  color: rgba(0,0,0,0.4);
   transform: rotate(0);
-  -webkit-transition: -webkit-transform 0.3s;
-  transition: -webkit-transform 0.3s;
   transition: transform 0.3s;
-  transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
 .getmdl-select.is-focused .mdl-icon-toggle__label {
   color: #3f51b5;
-  -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
@@ -289,11 +292,11 @@ h5 {
 
 /* just presenation */
 .center {
-  margin: 0 auto;
+  margin: 0 auto
 }
 
 .m-t-100 {
-  margin-top: 100px;
+  margin-top: 100px
 }
 
 .box {

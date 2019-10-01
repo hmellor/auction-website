@@ -5,6 +5,11 @@
   "main": "gulpfile.js",
   "dependencies": {
     "firebase": "^6.5.0",
+    "gulp-autoprefixer": "^7.0.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-header": "^2.0.9",
+    "gulp-plumber": "^1.2.1",
+    "gulp-sass": "^4.0.2",
     "gulp-terser": "^1.2.0"
   },
   "devDependencies": {
@@ -23,7 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/hmellor/auction-website.git"
   },
-  "author": "",
+  "author": "Harry Mellor",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hmellor/auction-website/issues"
