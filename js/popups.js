@@ -9,6 +9,8 @@ var overlay = $("#overlay"),
   cancel = $("#cancel"),
   submit = $("#submit");
 
+extraImages = [0, 1, 5, 6, 7];
+
 //fab click
 fabLogin.on('click', openLogin);
 overlay.on('click', closeFAB);
@@ -44,7 +46,6 @@ function openBid(id) {
 function openInfo(id) {
   console.log("Info popup from " + id);
   itemNumber = id.substring(10);
-  extraImages = [0, 1, 5, 6, 7];
   if (extraImages.includes(Number(itemNumber))) {
     $("#info-content img")[0].src = "./img/item" + itemNumber + "-extra.jpg";
   } else {
