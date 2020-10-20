@@ -4,7 +4,7 @@
   "description": "A website for hosting a silent auction",
   "main": "gulpfile.js",
   "dependencies": {
-    "firebase": "^7.20.0",
+    "firebase": "^7.24.0",
     "gulp-autoprefixer": "^7.0.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-header": "^2.0.9",
