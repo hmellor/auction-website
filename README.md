@@ -5,17 +5,18 @@ This repo contains the code to host an auction website for free using the GitHub
 This is a project I worked on for a charity as a pet project and so the functionality is very bespoke and not perfect (as much as I tried to make it). If you would like to contribute to making this codebase more general I welcome you to create pull requests with your improvements.
 
 ## Table of contents
+- [Table of contents](#table-of-contents)
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Setup](#setup)
-  * [Adding auction information](#adding-auction-information)
-  * [Compiling JavaScript and CSS](#compiling-javascript-and-css)
-  * [Hosting development server](#hosting-development-server)
-  * [Firebase setup](#firebase-setup)
-    * [Creating a project](#creating-a-project)
-    * [Authentication](#authentication)
-    * [Databse](#database)
-  * [Creating an admin account and initialising your auctions](#creating-an-admin-account-and-initialising-your-auctions)
+  - [Adding auction information](#adding-auction-information)
+  - [Compiling JavaScript and CSS](#compiling-javascript-and-css)
+  - [Hosting development server](#hosting-development-server)
+  - [Firebase setup](#firebase-setup)
+    - [Creating a project](#creating-a-project)
+    - [Authentication](#authentication)
+    - [Database](#database)
+  - [Creating an admin account and initialising your auctions](#creating-an-admin-account-and-initialising-your-auctions)
 
 ## Functionality
 
@@ -54,6 +55,8 @@ In order to deal with any side effects and increase website performance all of t
 ```
 cd /path/to/auction-website
 gulp build
+# or using the npm alias
+# npm run build
 ```
 
 ### Hosting development server
@@ -61,6 +64,8 @@ For development you can also use `gulp` to locally host a server that dynamicall
 ```
 cd /path/to/auction-website
 gulp watch
+# or using the npm alias
+# npm run watch
 ```
 
 ### Firebase setup
