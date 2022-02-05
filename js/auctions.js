@@ -15,7 +15,7 @@ function generateRandomAuctions() {
     { size: numberOfItems },
     function (data) {
       data.forEach((elem, idx) => {
-        $("#auction" + idx + " > div > h5")[0].innerHTML = elem.name;
+        $("#auction-" + idx + " > div > h5")[0].innerHTML = elem.name;
         popupTitle.push(elem.name);
       })
     });
@@ -26,7 +26,7 @@ function generateRandomAuctions() {
     function (data) {
       data.forEach((elem, idx) => {
 
-        $("#auction" + idx + " > div > p")[0].innerHTML = elem.short_sentence;
+        $("#auction-" + idx + " > div > p")[0].innerHTML = elem.short_sentence;
         popupInfo.push(elem.very_long_sentence)
       }
       )
@@ -175,92 +175,91 @@ function placeBid(id) {
 
 // Generatively populate the websire with auctions
 function generateItems() {
-  // create auction card
-  let col = document.createElement("div");
-  col.classList.add("col");
-
-  let card = document.createElement("div");
-  card.classList.add("card");
-  col.appendChild(card);
-  
-  let image = document.createElement("img");
-  image.classList.add("card-img-top");
-  card.appendChild(image);
-  
-  let body = document.createElement("div");
-  body.classList.add("card-body");
-  card.appendChild(body);
-  
-  let title = document.createElement("h5");
-  title.classList.add("title");
-  body.appendChild(title);
-  
-  let text = document.createElement("p");
-  text.classList.add("card-text");
-  body.appendChild(text);
-  
-  // Auction status
-  let statusTable = document.createElement("table");
-  statusTable.classList.add("table");
-  card.appendChild(statusTable);
-  
-  let tableBody = document.createElement("tbody");
-  statusTable.appendChild(tableBody);
-  
-  let bidRow = document.createElement("tr");
-  tableBody.appendChild(bidRow);
-  
-  let bidTitle = document.createElement("th");
-  bidTitle.scope = "row";
-  bidTitle.innerHTML = "Current bid:"
-  bidRow.appendChild(bidTitle);
-  
-  let bid = document.createElement("td");
-  bid.innerHTML = "£-.-- [- bids]"
-  bidRow.appendChild(bid);
-  
-  let timeRow = document.createElement("tr");
-  tableBody.appendChild(timeRow);
-  
-  let timeTitle = document.createElement("th");
-  timeTitle.scope = "row";
-  timeTitle.innerHTML = "Time left:"
-  timeRow.appendChild(timeTitle);
-  
-  let time = document.createElement("td");
-  timeRow.appendChild(time);
-  
-  // Auction actions
-  let buttonGroup = document.createElement("div");
-  buttonGroup.classList.add("btn-group");
-  card.appendChild(buttonGroup)
-  
-  let infoButton = document.createElement("button");
-  infoButton.type = "button"
-  infoButton.href = "#";
-  infoButton.classList.add("btn", "btn-secondary")
-  infoButton.innerText = "Info";
-  infoButton.onclick = function() {openInfo(this.id);}
-  buttonGroup.appendChild(infoButton);
-  
-  let bidButton = document.createElement("button");
-  bidButton.type = "button"
-  bidButton.href = "#";
-  bidButton.classList.add("btn", "btn-primary")
-  bidButton.innerText = "Submit bid";
-  bidButton.onclick = function() {openBid(this.id);}
-  buttonGroup.appendChild(bidButton);
-  
-  // // Add auction to grid
   auctionGrid = document.getElementById("auction-grid");
-  
+
   for (i = 0; i < numberOfItems; i++) {
+    // create auction card
+    let col = document.createElement("div");
+    col.classList.add("col");
+
+    let card = document.createElement("div");
+    card.classList.add("card");
     card.id = "auction-" + i
-    time.id = "time-left-" + i
+    col.appendChild(card);
+
+    let image = document.createElement("img");
+    image.classList.add("card-img-top");
+    card.appendChild(image);
+
+    let body = document.createElement("div");
+    body.classList.add("card-body");
+    card.appendChild(body);
+
+    let title = document.createElement("h5");
+    title.classList.add("title");
+    body.appendChild(title);
+
+    let text = document.createElement("p");
+    text.classList.add("card-text");
+    body.appendChild(text);
+
+    // Auction status
+    let statusTable = document.createElement("table");
+    statusTable.classList.add("table");
+    card.appendChild(statusTable);
+
+    let tableBody = document.createElement("tbody");
+    statusTable.appendChild(tableBody);
+
+    let bidRow = document.createElement("tr");
+    tableBody.appendChild(bidRow);
+    
+    let bidTitle = document.createElement("th");
+    bidTitle.innerHTML = "Current bid:"
+    bidTitle.scope = "row";
+    bidRow.appendChild(bidTitle);
+    
+    let bid = document.createElement("td");
+    bid.innerHTML = "£-.-- [- bids]"
     bid.id = "current-bid-" + i
+    bidRow.appendChild(bid);
+
+    let timeRow = document.createElement("tr");
+    tableBody.appendChild(timeRow);
+    
+    let timeTitle = document.createElement("th");
+    timeTitle.innerHTML = "Time left:"
+    timeTitle.scope = "row";
+    timeRow.appendChild(timeTitle);
+    
+    let time = document.createElement("td");
+    time.id = "time-left-" + i
+    timeRow.appendChild(time);
+    
+    // Auction actions
+    let buttonGroup = document.createElement("div");
+    buttonGroup.classList.add("btn-group");
+    card.appendChild(buttonGroup)
+    
+    let infoButton = document.createElement("button");
+    infoButton.type = "button"
+    infoButton.href = "#";
+    infoButton.classList.add("btn", "btn-secondary")
+    infoButton.innerText = "Info";
+    infoButton.onclick = function () { openInfo(this.id); }
+    infoButton.id = "info-button-" + i
+    buttonGroup.appendChild(infoButton);
+    
+    let bidButton = document.createElement("button");
+    bidButton.type = "button"
+    bidButton.href = "#";
+    bidButton.classList.add("btn", "btn-primary")
+    bidButton.innerText = "Submit bid";
+    bidButton.onclick = function () { openBid(this.id); }
     bidButton.id = "bid-button-" + i
-    infoButton.id = "infoButton-" + i
-    auctionGrid.appendChild(col.cloneNode(true));
+    buttonGroup.appendChild(bidButton);
+
+    auctionGrid.appendChild(col);
   }
 }
 
@@ -269,8 +268,8 @@ function dataListener() {
   // let weekday = new Date().getDay()
   // Only show active auctions
   // if (weekday == 5) {
-    //   secondNight.filter(x => !firstNight.includes(x)).forEach(function (i) {
-      //     $("#auction" + i).css({
+  //   secondNight.filter(x => !firstNight.includes(x)).forEach(function (i) {
+  //     $("#auction" + i).css({
   //       "display": "none"
   //     });
   //   });
