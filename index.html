@@ -12,20 +12,25 @@
   <title>Example Auction</title>
   <link rel="icon" type="image/png" href="./img/favicon.ico">
 
-  <!-- Material Design Lite -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="./css/auction-website.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Quicksand:600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/auction-website.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-app.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
 
@@ -45,136 +50,125 @@
     var db = firebase.firestore();
     var auth = firebase.auth();
   </script>
-
-  <!-- Always shows a header, even in smaller screens. -->
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <span class="mdl-layout-title">
-          <img src="./img/logo.png">
-          Example Auction
-        </span>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title" id="login-indicator1">You must log in to bid </span>
-      <nav class="mdl-navigation">
-        <div class="fab login-button">
-          <a class="mdl-navigation__link mdl-layout--large-screen-only" onclick="document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();">Sign up</a>
-        </div>
-      </nav>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand mb-0 h1">
+        <img src="./img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+        The Markatplace
+      </a>
+      <a class="navbar-brand" id="username-display"></a>
+      <button id="signup-button" class="btn btn-secondary" type="submit" onclick="openLogin()">Sign up</button>
     </div>
-    <main class="mdl-layout__content">
-      <!-- This is where the website content goes -->
-      <div class="page-content">
-        <!-- Login form -->
-        <div id="overlay"></div>
-        <div class="fab login-form">
-          <form class='cntt-wrapper'>
-            <div id="fab-hdr">
-              <h3>Sign up</h3>
-            </div>
+  </nav>
+  <!-- Grid of auction items -->
+  <div id="auction-container" class="container">
+    <div id="auction-grid" class="row row-cols-1 row-cols-md-3 g-4"></div>
 
-            <div class="cntt">
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="full-name">
-                <input class="mdl-textfield__input" type="text" id="text1" onkeypress="return newUserLogin(event)" autofocus />
-                <label class="mdl-textfield__label" for="text2">Full name...</label>
-                <span class="mdl-textfield__error">Please enter name!</span>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+      <div class="col-md-4 d-flex align-items-center">
+        <span class="text-muted">© 2021 Harry Mellor</span>
+      </div>
 
-              </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="table-number-box">
-                <select class="mdl-textfield__input" id="table-number" name="table-number">
-                  <option></option>
-                  <option value="1">Table 1</option>
-                  <option value="2">Table 2</option>
-                  <option value="3">Table 3</option>
-                  <option value="4">Table 4</option>
-                  <option value="5">Table 5</option>
-                </select>
-                <label class="mdl-textfield__label" for="table-number">Table Number...</label>
-                <span class="mdl-textfield__error">Please select table!</span>
-              </div>
-            </div>
+      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+        <li class="ms-3"><a class="bi bi-github text-muted" href="https://github.com/HMellor/" width="24"
+            height="24"></a></li>
+      </ul>
+    </footer>
+  </div>
 
-            <div class="btn-wrapper">
-              <button class="mdl-button mdl-js-button" id="cancel" onclick="closeFAB(event);">Cancel</button>
-              <button class="mdl-button mdl-js-button mdl-button--primary" id="submit" onclick="return newUserLogin(event);">Submit</button>
-
-            </div>
-
-          </form>
+  <!-- Login popup -->
+  <div id="login-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="login-modal-title" class="modal-title">Sign up for Markatplace Auction</h5>
         </div>
-        <!-- Info page -->
-        <div class="fab info-page">
-          <form class='cntt-wrapper'>
-            <div id="fab-hdr-info">
-              <h3>Item Name</h3>
+        <div class="modal-body">
+          <p>We use anonymous authentication provided by Google. Your account is attached to your device signature.</p>
+          <p>The username just lets us know who's bidding!</p>
+          <form>
+            <div class="form-floating mb-3">
+              <input type="username" class="form-control" id="username-input" placeholder="username" required>
+              <label for="username-input">Username</label>
             </div>
-
-            <div class="cntt" id="info-content">
-              <p>Placeholder item information.</p>
-              <img src="">
-            </div>
-
-            <div class="btn-wrapper">
-              <button class="mdl-button mdl-js-button" id="cancel" onclick="closeFAB(event);">Close</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                aria-label="Cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary" onclick="newUserLogin()">Sign up</button>
             </div>
           </form>
-        </div>
-        <!-- Bid form -->
-        <div class="fab bid-form">
-          <form class='cntt-wrapper'>
-            <div id="fab-hdr">
-              <h3>Place your bid</h3>
-              <h4>Item Placeholder</h4>
-            </div>
-
-            <div class="cntt">
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="textfield1">
-                <input class="mdl-textfield__input" type="text" id="text2" pattern="^-?\d*[.,]?\d{0,2}$" onkeypress="placeBid(event);" autofocus />
-                <label class="mdl-textfield__label" for="text2">Amount...</label>
-                <span class="mdl-textfield__error" id="bid-error">Input is not a valid amount of money!</span>
-              </div>
-            </div>
-
-            <div class="btn-wrapper with-confirm">
-              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" id="checkbox-1">
-                <input type="checkbox" class="mdl-checkbox__input" onclick="$('#text2').focus();">
-                <span class="mdl-checkbox__label">Confirm</span>
-              </label>
-
-              <button class="mdl-button mdl-js-button" id="cancel" onclick="closeFAB(event);">Cancel</button>
-              <button class="mdl-button mdl-js-button mdl-button--primary" id="submit-bid" onclick="placeBid(event);">Submit Bid</button>
-
-            </div>
-
-          </form>
-        </div>
-        <!-- Grid of auction items -->
-        <div class="mdl-grid" id="auction-grid">
-          <div id="login-prompt" class="mdl-js-snackbar mdl-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button class="mdl-snackbar__action" type="button"></button>
-          </div>
         </div>
       </div>
-      <footer class="mdl-mini-footer">
-        <div class="mdl-mini-footer__left-section">
-          <div class="mdl-logo">Website by <a href="https://github.com/HMellor/">Harry Mellor</a> (GitHub)</div>
-        </div>
-      </footer>
-    </main>
+    </div>
   </div>
-  <!-- Material Design Lite -->
-  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <!-- Info popup -->
+  <div id="info-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="info-modal-title" class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="info-modal-desc"></p>
+          <img id="info-modal-img"></img>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Submit bid"
+            onclick="openBid(this.id)">Submit bid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bid popup -->
+  <div id="bid-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="bid-modal-title" class="modal-title">Place your bid</h5>
+        </div>
+        <div class="modal-body">
+          <p>You are about to place a bid on <strong id="bid-modal-subtitle"></strong></p>
+          <form>
+            <div class="form-floating mb-3">
+              <input type="amount" class="form-control" id="amount-input" placeholder="amount" required>
+              <label for="amount-input">Amount</label>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" onclick="placeBid(self.id)">Submit bid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="textfield1">
+  <input class="mdl-textfield__input" type="text" id="text2" pattern="^-?\d*[.,]?\d{0,2}$"
+    onkeypress="placeBid(event);" autofocus />
+  <label class="mdl-textfield__label" for="text2">Amount...</label>
+  <span class="mdl-textfield__error" id="bid-error">Input is not a valid amount of money!</span>
+</div>
+</div>
+
+<div class="btn-wrapper with-confirm">
+<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" id="checkbox-1">
+  <input type="checkbox" class="mdl-checkbox__input" onclick="$('#text2').focus();">
+  <span class="mdl-checkbox__label">Confirm</span>
+</label> -->
+
   <!-- Custom JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script src="./js/index.min.js"></script>
+  <script src="./js/auctions.js"></script>
+  <script src="./js/popups.js"></script>
   <!-- Create anonymous account -->
   <script>
     generateItems();
+    generateRandomAuctions();
     setClocks();
     dataListener()
     autoLogin();

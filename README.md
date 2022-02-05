@@ -1,5 +1,7 @@
 # Auction Website
 
+** Undergoing refactor, readme will be wrong for a while **
+
 This repo contains the code to host an auction website for free using the GitHub static hosting and Firebase authentication and databases.
 
 This is a project I worked on for a charity as a pet project and so the functionality is very bespoke and not perfect (as much as I tried to make it). If you would like to contribute to making this codebase more general I welcome you to create pull requests with your improvements.
