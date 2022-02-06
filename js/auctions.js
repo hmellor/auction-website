@@ -111,62 +111,78 @@ function setClocks() {
 
 // Place a bid on an item
 function placeBid() {
-  let i = document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary").id.match("[0-9]+");
+  let nowTime = new Date().getTime() / 1000;
+  let modalBidButton = document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary")
+  modalBidButton.setAttribute('disabled', '') // disable the button while we check
+  let i = modalBidButton.id.match("[0-9]+");
   let feedback = document.getElementById("bad-amount-feedback")
   // Cleanse input
   let amountElement = document.getElementById("amount-input")
   let amount = Number(amountElement.value)
-  if (amount == 0) {
+  if (endTimes[i] - nowTime < 0) {
+    feedback.innerText = "The auction is already over!"
+    amountElement.classList.add("is-invalid")
+    setTimeout(() => {
+      bidModal.hide();
+      amountElement.classList.remove("is-invalid");
+      modalBidButton.removeAttribute('disabled', '');
+    }, 1000);
+  } else if (amount == 0) {
     // amount was empty
     feedback.innerText = "Please specify an amount!"
     amountElement.classList.add("is-invalid")
-    return
+    modalBidButton.removeAttribute('disabled', '');
   } else if (!(/^-?\d*\.?\d{0,2}$/.test(amount))) {
     // field is does not contain money
     feedback.innerText = "Please specify a valid amount!"
     amountElement.classList.add("is-invalid")
-    return
+    modalBidButton.removeAttribute('disabled', '');
+  } else {
+    // Checking bid amount
+    // Get item and user info
+    let user = auth.currentUser;
+    let itemId = i.toString().padStart(5, "0")
+    // Documents to check and write to
+    let liveRef = db.collection("auction-live").doc("items")
+    let storeRef = db.collection("auction-store").doc(itemId)
+    // Check live document
+    liveRef.get().then(function (doc) {
+      console.log("Database read from placeBid()")
+      let thisItem = doc.data()[itemId];
+      let bids = (Object.keys(thisItem).length - 1) / 2
+      let currentBid = thisItem["bid" + bids]
+      if (amount >= 1 + currentBid) {
+        dotBidder = itemId + ".bid" + (bids + 1) + "-user"
+        dotKey = itemId + ".bid" + (bids + 1)
+        liveRef.update({
+          [dotBidder]: user.displayName,
+          [dotKey]: amount,
+        })
+        console.log("Database write from placeBid()")
+        storeKey = "bid" + (bids + 1)
+        storeRef.update({
+          [storeKey]: {
+            bidder: user.displayName,
+            amount: amount,
+            time: Date().substring(0, 24)
+          }
+        })
+        console.log("Database write from placeBid()")
+        amountElement.classList.add("is-valid")
+        amountElement.classList.remove("is-invalid")
+        setTimeout(() => {
+          bidModal.hide();
+          amountElement.classList.remove("is-valid");
+          modalBidButton.removeAttribute('disabled', '');
+        }, 1000);
+        
+      } else {
+        amountElement.classList.add("is-invalid")
+        feedback.innerText = "You must bid at least £" + (currentBid + 1).toFixed(2) + "!"
+        modalBidButton.removeAttribute('disabled', '');
+      }
+    });
   }
-  // Checking bid amount
-  // Get item and user info
-  let user = auth.currentUser;
-  let itemId = i.toString().padStart(5, "0")
-  // Documents to check and write to
-  let liveRef = db.collection("auction-live").doc("items")
-  let storeRef = db.collection("auction-store").doc(itemId)
-  // Check live document
-  liveRef.get().then(function (doc) {
-    console.log("Database read from placeBid()")
-    let thisItem = doc.data()[itemId];
-    let bids = (Object.keys(thisItem).length - 1) / 2
-    let currentBid = thisItem["bid" + bids]
-    if (amount >= 1 + currentBid) {
-      dotBidder = itemId + ".bid" + (bids + 1) + "-user"
-      dotKey = itemId + ".bid" + (bids + 1)
-      liveRef.update({
-        [dotBidder]: user.displayName,
-        [dotKey]: amount,
-      })
-      console.log("Database write from placeBid()")
-      storeKey = "bid" + (bids + 1)
-      storeRef.update({
-        [storeKey]: {
-          bidder: user.displayName,
-          amount: amount,
-          time: Date().substring(0, 24)
-        }
-      })
-      console.log("Database write from placeBid()")
-      amountElement.classList.add("is-valid")
-      amountElement.classList.remove("is-invalid")
-      setTimeout(() => { bidModal.hide(); amountElement.classList.remove("is-valid") }, 1000);
-
-    } else {
-      amountElement.classList.add("is-invalid")
-      feedback.innerText = "You must bid at least £" + (currentBid + 1).toFixed(2) + "!"
-      return
-    }
-  });
 }
 
 function argsort(array) {
