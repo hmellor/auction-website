@@ -36,7 +36,7 @@ function newUserLogin() {
     let username = document.getElementById('username-input').value
     let user = auth.currentUser;
     user.updateProfile({ displayName: username })
-    db.collection("users").doc(user.uid).set({ name: username })
+    db.collection("users").doc(user.uid).set({ name: username, admin: false })
     loginModal.hide()
     replaceSignupButton(username)
   }
