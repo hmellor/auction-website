@@ -14,7 +14,8 @@ function generateRandomAuctions() {
   // Random cat images
   document.querySelectorAll(".card > img").forEach(img => {
     img.src = "https://cataas.com/cat/cute?random=" + Math.random();
-    secondaryImages.push(img.src)
+    primaryImages.push(img.src);
+    secondaryImages.push(img.src);
   });
   // Random cat names
   $.getJSON(
@@ -34,13 +35,14 @@ function generateRandomAuctions() {
     function (data) {
       data.forEach((elem, idx) => {
         document.querySelector("#auction-" + idx + " > div > p").innerHTML = elem.short_sentence;
-        details.push(elem.very_long_sentence)
+        subtitles.push(elem.short_sentence);
+        details.push(elem.very_long_sentence);
       });
     }
   );
 }
 
-// Get the date of the next nth day of the week
+// Get the date of the next nth day of the week (Sunday is day 0)
 function getNextDayOfWeek(dayOfWeek) {
   today = new Date();
   today.setDate(today.getDate() + (7 + dayOfWeek - today.getDay()) % 7);
