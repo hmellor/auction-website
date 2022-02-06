@@ -89,6 +89,15 @@ function setClocks() {
     // remove finished auction after 5 minutes
     if (endTimes[i] - nowTime < -300) {
       document.getElementById("auction-" + i).parentElement.style.display = "none"
+      if (demoAuction) {
+        endTimes[i] = endTimes[i] + 604800 // add 1 week
+        document.getElementById("auction-" + i).parentElement.remove()
+        resetLive(i);
+        resetStore(i);
+        auctionGrid = document.getElementById("auction-grid");
+        auctionCard = generateAuctionCard(i);
+        auctionGrid.appendChild(auctionCard);
+      }
       // disable bidding on finished auctions
     } else if (endTimes[i] - nowTime < 0) {
       timer.innerHTML = "Auction Complete";
