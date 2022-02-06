@@ -164,96 +164,101 @@ function argsort(array) {
   return arrayObject.map(data => data.idx);;
 }
 
+function generateAuctionCard(i) {
+  // create auction card
+  let col = document.createElement("div");
+  col.classList.add("col");
+
+  let card = document.createElement("div");
+  card.classList.add("card");
+  card.id = "auction-" + i
+  col.appendChild(card);
+
+  let image = document.createElement("img");
+  image.classList.add("card-img-top");
+  image.src = primaryImages[i];
+  card.appendChild(image);
+
+  let body = document.createElement("div");
+  body.classList.add("card-body");
+  card.appendChild(body);
+
+  let title = document.createElement("h5");
+  title.classList.add("title");
+  title.innerText = titles[i];
+  body.appendChild(title);
+
+  let subtitle = document.createElement("p");
+  subtitle.classList.add("card-subtitle");
+  subtitle.innerText = subtitles[i];
+  body.appendChild(subtitle);
+
+  // Auction status
+  let statusTable = document.createElement("table");
+  statusTable.classList.add("table");
+  card.appendChild(statusTable);
+
+  let tableBody = document.createElement("tbody");
+  statusTable.appendChild(tableBody);
+
+  let bidRow = document.createElement("tr");
+  tableBody.appendChild(bidRow);
+
+  let bidTitle = document.createElement("th");
+  bidTitle.innerHTML = "Current bid:"
+  bidTitle.scope = "row";
+  bidRow.appendChild(bidTitle);
+
+  let bid = document.createElement("td");
+  bid.innerHTML = "£-.-- [- bids]"
+  bid.id = "current-bid-" + i
+  bidRow.appendChild(bid);
+
+  let timeRow = document.createElement("tr");
+  tableBody.appendChild(timeRow);
+
+  let timeTitle = document.createElement("th");
+  timeTitle.innerHTML = "Time left:"
+  timeTitle.scope = "row";
+  timeRow.appendChild(timeTitle);
+
+  let time = document.createElement("td");
+  time.id = "time-left-" + i
+  timeRow.appendChild(time);
+
+  // Auction actions
+  let buttonGroup = document.createElement("div");
+  buttonGroup.classList.add("btn-group");
+  card.appendChild(buttonGroup)
+
+  let infoButton = document.createElement("button");
+  infoButton.type = "button"
+  infoButton.href = "#";
+  infoButton.classList.add("btn", "btn-secondary")
+  infoButton.innerText = "Info";
+  infoButton.onclick = function () { openInfo(this.id); }
+  infoButton.id = "info-button-" + i
+  buttonGroup.appendChild(infoButton);
+
+  let bidButton = document.createElement("button");
+  bidButton.type = "button"
+  bidButton.href = "#";
+  bidButton.classList.add("btn", "btn-primary")
+  bidButton.innerText = "Submit bid";
+  bidButton.onclick = function () { openBid(this.id); }
+  bidButton.id = "bid-button-" + i
+  buttonGroup.appendChild(bidButton);
+
+  return col
+}
+
 // Generatively populate the websire with auctions
-function generateItems() {
+function populateAuctionGrid() {
   auctionGrid = document.getElementById("auction-grid");
   let endingSoonest = argsort(endTimes);
   endingSoonest.forEach((i) => {
-    // create auction card
-    let col = document.createElement("div");
-    col.classList.add("col");
-
-    let card = document.createElement("div");
-    card.classList.add("card");
-    card.id = "auction-" + i
-    col.appendChild(card);
-
-    let image = document.createElement("img");
-    image.classList.add("card-img-top");
-    image.src = primaryImages[i];
-    card.appendChild(image);
-
-    let body = document.createElement("div");
-    body.classList.add("card-body");
-    card.appendChild(body);
-
-    let title = document.createElement("h5");
-    title.classList.add("title");
-    title.innerText = titles[i];
-    body.appendChild(title);
-
-    let subtitle = document.createElement("p");
-    subtitle.classList.add("card-subtitle");
-    subtitle.innerText = subtitles[i];
-    body.appendChild(subtitle);
-
-    // Auction status
-    let statusTable = document.createElement("table");
-    statusTable.classList.add("table");
-    card.appendChild(statusTable);
-
-    let tableBody = document.createElement("tbody");
-    statusTable.appendChild(tableBody);
-
-    let bidRow = document.createElement("tr");
-    tableBody.appendChild(bidRow);
-
-    let bidTitle = document.createElement("th");
-    bidTitle.innerHTML = "Current bid:"
-    bidTitle.scope = "row";
-    bidRow.appendChild(bidTitle);
-
-    let bid = document.createElement("td");
-    bid.innerHTML = "£-.-- [- bids]"
-    bid.id = "current-bid-" + i
-    bidRow.appendChild(bid);
-
-    let timeRow = document.createElement("tr");
-    tableBody.appendChild(timeRow);
-
-    let timeTitle = document.createElement("th");
-    timeTitle.innerHTML = "Time left:"
-    timeTitle.scope = "row";
-    timeRow.appendChild(timeTitle);
-
-    let time = document.createElement("td");
-    time.id = "time-left-" + i
-    timeRow.appendChild(time);
-
-    // Auction actions
-    let buttonGroup = document.createElement("div");
-    buttonGroup.classList.add("btn-group");
-    card.appendChild(buttonGroup)
-
-    let infoButton = document.createElement("button");
-    infoButton.type = "button"
-    infoButton.href = "#";
-    infoButton.classList.add("btn", "btn-secondary")
-    infoButton.innerText = "Info";
-    infoButton.onclick = function () { openInfo(this.id); }
-    infoButton.id = "info-button-" + i
-    buttonGroup.appendChild(infoButton);
-
-    let bidButton = document.createElement("button");
-    bidButton.type = "button"
-    bidButton.href = "#";
-    bidButton.classList.add("btn", "btn-primary")
-    bidButton.innerText = "Submit bid";
-    bidButton.onclick = function () { openBid(this.id); }
-    bidButton.id = "bid-button-" + i
-    buttonGroup.appendChild(bidButton);
-
-    auctionGrid.appendChild(col);
+    auctionCard = generateAuctionCard(i);
+    auctionGrid.appendChild(auctionCard);
   });
   if (demoAuction) { generateRandomAuctions() };
 }
@@ -279,28 +284,32 @@ function dataListener() {
   })
 }
 
-function resetLive() {
-  console.log("Resetting live tracker")
+function resetLive(i) {
   let docRef = db.collection("auction-live").doc("items");
-  let itemId = "0".padStart(5, "0")
-  docRef.set({
+  let itemId = i.toString().padStart(5, "0")
+  docRef.update({
     [itemId]: {
-      bid0: startPrices[0]["bid0"]["amount"],
+      bid0: startPrices[i]["bid0"]["amount"],
     }
   })
   console.log("Database write from resetLive()")
-  for (i = 1; i < startingPrices.length; i++) {
-    let itemId = i.toString().padStart(5, "0")
-    docRef.update({
-      [itemId]: {
-        bid0: startPrices[i]["bid0"]["amount"],
-      }
-    })
-    console.log("Database write from resetLive()")
+}
+
+function resetAllLive() {
+  console.log("Resetting live tracker")
+  for (i = 0; i < startingPrices.length; i++) {
+    resetLive(i);
   }
 }
 
-function resetStore() {
+function resetStore(i) {
+  let itemId = i.toString().padStart(5, "0")
+  let docRef = db.collection("auction-store").doc(itemId);
+  docRef.set(startPrices[i])
+  console.log("Database write from resetStore()")
+}
+
+function resetAllStore() {
   console.log("Resetting auction storage")
   let batch = db.batch();
   for (i = 0; i < startingPrices.length; i++) {
@@ -309,10 +318,10 @@ function resetStore() {
     batch.set(currentItem, startPrices[i])
   }
   batch.commit()
-  console.log(startingPrices.length + " database writes from resetStore()")
+  console.log(startingPrices.length + " database writes from resetAllStore()")
 }
 
 function resetAll() {
-  resetLive();
-  resetStore();
+  resetAllLive();
+  resetAllStore();
 }
