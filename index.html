@@ -87,9 +87,10 @@
         <div class="modal-body">
           <p>We use anonymous authentication provided by Google. Your account is attached to your device signature.</p>
           <p>The username just lets us know who's bidding!</p>
-          <form>
+          <form onsubmit="return false;">
             <div class="form-floating mb-3">
-              <input type="username" class="form-control" id="username-input" placeholder="username" required>
+              <input type="username" class="form-control" id="username-input" placeholder="username"
+                onkeypress="if (event.key == 'Enter') {newUserLogin()}">
               <label for="username-input">Username</label>
             </div>
             <div class="modal-footer">
@@ -131,9 +132,10 @@
         </div>
         <div class="modal-body">
           <p>You are about to place a bid on <strong id="bid-modal-subtitle"></strong></p>
-          <form>
+          <form onsubmit="return false;">
             <div class="form-floating mb-3">
-              <input type="amount" class="form-control" id="amount-input" placeholder="amount" required>
+              <input type="amount" class="form-control" id="amount-input" placeholder="amount"
+                onkeypress="if (event.key == 'Enter') {placeBid()}">
               <label for="amount-input">Amount</label>
               <div id="bad-amount-feedback" class="invalid-feedback"></div>
             </div>
