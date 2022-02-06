@@ -19,6 +19,7 @@ function openBid(id) {
   loggedIn = auth.currentUser && auth.currentUser.displayName
   if (loggedIn) {
     bidModal.show()
+    document.getElementById("amount-input").focus()
   } else {
     openLogin()
   }
@@ -26,7 +27,7 @@ function openBid(id) {
 
 function openLogin() {
   loggedIn = auth.currentUser && auth.currentUser.displayName
-  if (!loggedIn) { loginModal.show() }
+  if (!loggedIn) { loginModal.show(); document.getElementById('username-input').focus() }
 }
 
 function newUserLogin() {
