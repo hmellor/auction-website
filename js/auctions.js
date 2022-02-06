@@ -2,35 +2,38 @@ let numberOfItems = 12
 let popupInfo = [];
 let popupTitle = [];
 let popupImage = [];
+startingPrices = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
 
 // Random auction information
 function generateRandomAuctions() {
-  $(".card > img").each((idx, img) => {
+  // Random cat images
+  document.querySelectorAll(".card > img").forEach(img => {
     img.src = "https://cataas.com/cat/cute?random=" + Math.random();
     popupImage.push(img.src)
   });
-
+  // Random cat names
   $.getJSON(
     "https://random-data-api.com/api/name/random_name",
-    { size: numberOfItems },
+    { size: startingPrices.length },
     function (data) {
       data.forEach((elem, idx) => {
-        $("#auction-" + idx + " > div > h5")[0].innerHTML = elem.name;
+        document.querySelector("#auction-" + idx + " > div > h5").innerHTML = elem.name;
         popupTitle.push(elem.name);
-      })
-    });
-
+      });
+    }
+  );
+  // Random lorem ipsum cat descriptions
   $.getJSON(
     "https://random-data-api.com/api/lorem_ipsum/random_lorem_ipsum",
-    { size: numberOfItems },
+    { size: startingPrices.length },
     function (data) {
       data.forEach((elem, idx) => {
-
-        $("#auction-" + idx + " > div > p")[0].innerHTML = elem.short_sentence;
+        document.querySelector("#auction-" + idx + " > div > p").innerHTML = elem.short_sentence;
         popupInfo.push(elem.very_long_sentence)
-      }
-      )
-    });
+      });
+    }
+  );
+}
 
 }
 
@@ -54,7 +57,7 @@ for (let i = 0; i < numberOfItems; i++) {
   startPrices.push({
     bid0: {
       bidder: String(i),
-      amount: minimumBid[i],
+      amount: startingPrices[i],
       time: Date().substring(0, 24)
     }
   })
@@ -252,27 +255,10 @@ function generateItems() {
 }
 
 function dataListener() {
-  // See which weekday it is
-  // let weekday = new Date().getDay()
-  // Only show active auctions
-  // if (weekday == 5) {
-  //   secondNight.filter(x => !firstNight.includes(x)).forEach(function (i) {
-  //     $("#auction" + i).css({
-  //       "display": "none"
-  //     });
-  //   });
-  // } else if (weekday == 6) {
-  //   firstNight.filter(x => !secondNight.includes(x)).forEach(function (i) {
-  //     $("#auction" + i).css({
-  //       "display": "none"
-  //     });
-  //   });
-  // }
   // Listen for updates in active auctions
   db.collection("auction-live").doc("items").onSnapshot(function (doc) {
     console.log("Database read from dataListener()")
     let data = doc.data()
-    console.log(data)
     for (key in data) {
       let cb = document.getElementById("current-bid-" + Number(key))
       let bids = data[key]
@@ -299,7 +285,7 @@ function resetLive() {
     }
   })
   console.log("Database write from resetLive()")
-  for (i = 1; i < numberOfItems; i++) {
+  for (i = 1; i < startingPrices.length; i++) {
     let itemId = i.toString().padStart(5, "0")
     docRef.update({
       [itemId]: {
@@ -313,13 +299,13 @@ function resetLive() {
 function resetStore() {
   console.log("Resetting auction storage")
   let batch = db.batch();
-  for (i = 0; i < numberOfItems; i++) {
+  for (i = 0; i < startingPrices.length; i++) {
     let itemId = i.toString().padStart(5, "0")
     let currentItem = db.collection("auction-store").doc(itemId);
     batch.set(currentItem, startPrices[i])
   }
   batch.commit()
-  console.log(numberOfItems + " database writes from resetStore()")
+  console.log(startingPrices.length + " database writes from resetStore()")
 }
 
 function resetAll() {
