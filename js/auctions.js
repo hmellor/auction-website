@@ -155,11 +155,17 @@ function placeBid() {
   });
 }
 
+function argsort(array) {
+  const arrayObject = array.map((value, idx) => { return { value, idx }; });
+  arrayObject.sort((a, b) => (a.value - b.value))
+  return arrayObject.map(data => data.idx);;
+}
+
 // Generatively populate the websire with auctions
 function generateItems() {
   auctionGrid = document.getElementById("auction-grid");
-
-  for (i = 0; i < numberOfItems; i++) {
+  let endingSoonest = argsort(endTimes);
+  endingSoonest.forEach((i) => {
     // create auction card
     let col = document.createElement("div");
     col.classList.add("col");
@@ -242,7 +248,7 @@ function generateItems() {
     buttonGroup.appendChild(bidButton);
 
     auctionGrid.appendChild(col);
-  }
+  });
 }
 
 function dataListener() {
