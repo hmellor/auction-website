@@ -149,12 +149,11 @@ function placeBid() {
     liveRef.get().then(function (doc) {
       console.log("Database read from placeBid()")
       let thisItem = doc.data()[itemId];
-      let bids = (Object.keys(thisItem).length - 1) / 3
+      let bids = (Object.keys(thisItem).length - 1) / 2
       let currentBid = thisItem["bid" + bids]
       if (amount >= 1 + currentBid) {
         keyStem = itemId + ".bid" + (bids + 1)
         liveRef.update({
-          [keyStem + "-username"]: user.displayName,
           [keyStem + "-uid"]: user.uid,
           [keyStem]: amount,
         })
@@ -162,8 +161,9 @@ function placeBid() {
         storeKey = "bid" + (bids + 1)
         storeRef.update({
           [storeKey]: {
-            bidder: user.displayName,
-            amount: amount,
+            "bidder-username": user.displayName,
+            "bidder-uid": user.uid,
+            "amount": amount,
             time: Date().substring(0, 24)
           }
         })
@@ -175,7 +175,6 @@ function placeBid() {
           amountElement.classList.remove("is-valid");
           modalBidButton.removeAttribute('disabled', '');
         }, 1000);
-        
       } else {
         amountElement.classList.add("is-invalid")
         feedback.innerText = "You must bid at least £" + (currentBid + 1).toFixed(2) + "!"
@@ -299,7 +298,7 @@ function dataListener() {
       let cb = document.getElementById("current-bid-" + Number(key))
       let bids = data[key]
       // Extract bid data
-      let bidCount = (Object.keys(bids).length - 1) / 3
+      let bidCount = (Object.keys(bids).length - 1) / 2
       let currPound = Number.parseFloat(bids["bid" + bidCount]).toFixed(2)
       // Check if the user is winning
       if (auth.currentUser) {
