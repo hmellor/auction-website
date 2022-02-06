@@ -152,11 +152,11 @@ function placeBid() {
       let bids = (Object.keys(thisItem).length - 1) / 2
       let currentBid = thisItem["bid" + bids]
       if (amount >= 1 + currentBid) {
-        dotBidder = itemId + ".bid" + (bids + 1) + "-user"
-        dotKey = itemId + ".bid" + (bids + 1)
+        keyStem = itemId + ".bid" + (bids + 1)
         liveRef.update({
-          [dotBidder]: user.displayName,
-          [dotKey]: amount,
+          [keyStem + "-username"]: user.displayName,
+          [keyStem + "-uid"]: user.uid,
+          [keyStem]: amount,
         })
         console.log("Database write from placeBid()")
         storeKey = "bid" + (bids + 1)
