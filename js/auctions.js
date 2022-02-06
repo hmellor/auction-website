@@ -44,7 +44,7 @@ let endTimes = [];
 let startPrices = [];
 firstNight = [0, 1, 3, 5, 7];
 secondNight = [0, 1, 2, 4, 6];
-minimumBid = [55, 60, 20, 0, 4, 0, 99, 0];
+minimumBid = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
 for (let i = 0; i < numberOfItems; i++) {
   if (secondNight.includes(i)) {
     endTimes.push(endTime2)
@@ -86,65 +86,41 @@ function setClocks() {
 }
 
 // Place a bid on an item
-function placeBid(id) {
-  let i = id.match("[0-9]+");
+function placeBid() {
+  let i = document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary").id.match("[0-9]+");
+  let feedback = document.getElementById("bad-amount-feedback")
   // Cleanse input
-  console.log("Cleaning input")
-  let confirm = $("#checkbox-1").is('.is-checked')
-  let amount = Number($("#text2")[0].value)
-  if (!confirm && amount == 0) {
-    console.log("No amount or confirm")
-    let showError = $("#textfield1")[0]
-    let error = $("#bid-error")[0]
-    error.innerHTML = "Please enter and confirm an amount!"
-    showError.classList.add("is-invalid", "is-dirty")
+  let amountElement = document.getElementById("amount-input")
+  let amount = Number(amountElement.value)
+  if (amount == 0) {
+    // amount was empty
+    feedback.innerText = "Please specify an amount!"
+    amountElement.classList.add("is-invalid")
     return
-  } else if (amount == 0) {
-    console.log("No amount")
-    let showError = $("#textfield1")[0]
-    let error = $("#bid-error")[0]
-    error.innerHTML = "Please enter an amount!"
-    showError.classList.add("is-invalid", "is-dirty")
-    return
-  } else if (!(/^-?\d*[.,]?\d{0,2}$/.test(amount))) {
-    console.log("Not money")
-    let showError = $("#textfield1")[0]
-    let error = $("#bid-error")[0]
-    error.innerHTML = "Input is not a valid amount of money!"
-    showError.classList.add("is-invalid", "is-dirty")
-    return
-  } else if (!confirm) {
-    console.log("No confirm")
-    let showError = $("#textfield1")[0]
-    let error = $("#bid-error")[0]
-    error.innerHTML = "Please confirm your bid!"
-    showError.classList.add("is-invalid", "is-dirty")
+  } else if (!(/^-?\d*\.?\d{0,2}$/.test(amount))) {
+    // field is does not contain money
+    feedback.innerText = "Please specify a valid amount!"
+    amountElement.classList.add("is-invalid")
     return
   }
   // Checking bid amount
-  console.log('Checking if bid is high enough')
-  let classArray = $(".bid-form")[0].classList
-  for (i = 0; i < classArray.length; ++i) {
-    let item = classArray[i].match(/bid-button-[0-9]+/);
-  }
   // Get item and user info
   let user = auth.currentUser;
-  let itemNumber = item[0].substring(9);
-  let itemName = (itemNumber.toString().length < 2 ? "0" + itemNumber : itemNumber) + " - " + items[itemNumber]
+  let itemId = i.toString().padStart(5, "0")
   // Documents to check and write to
   let liveRef = db.collection("auction-live").doc("items")
-  let storeRef = db.collection("auction-store").doc(itemName)
+  let storeRef = db.collection("auction-store").doc(itemId)
   // Check live document
   liveRef.get().then(function (doc) {
     console.log("Database read from placeBid()")
-    let thisItem = doc.data()[itemName];
+    let thisItem = doc.data()[itemId];
     let bids = (Object.keys(thisItem).length - 1) / 2
-    let key = "bid" + bids
-    if (amount >= 1 + thisItem[key]) {
-      dotBidder = itemName + ".bid" + (bids + 1) + "-user"
-      dotKey = itemName + ".bid" + (bids + 1)
+    let currentBid = thisItem["bid" + bids]
+    if (amount >= 1 + currentBid) {
+      dotBidder = itemId + ".bid" + (bids + 1) + "-user"
+      dotKey = itemId + ".bid" + (bids + 1)
       liveRef.update({
-        [dotBidder]: user.uid,
+        [dotBidder]: user.displayName,
         [dotKey]: amount,
       })
       console.log("Database write from placeBid()")
@@ -157,20 +133,16 @@ function placeBid(id) {
         }
       })
       console.log("Database write from placeBid()")
-      $("#text2")[0].value = ""
-      $("#textfield1")[0].classList.remove("is-invalid", "is-dirty")
-      $("#checkbox-1")[0].classList.remove("is-checked")
-      closeFAB(event)
+      amountElement.classList.add("is-valid")
+      amountElement.classList.remove("is-invalid")
+      setTimeout(() => { bidModal.hide(); amountElement.classList.remove("is-valid") }, 1000);
+
     } else {
-      let showError = $("#textfield1")[0]
-      let error = $("#bid-error")[0]
-      error.innerHTML = "You must bid at least £" + (1 + thisItem[key]).toFixed(2) + "!"
-      showError.classList.add("is-invalid", "is-dirty")
-      console.info('Must be highest bid so far')
+      amountElement.classList.add("is-invalid")
+      feedback.innerText = "You must bid at least £" + (currentBid + 1).toFixed(2) + "!"
       return
     }
   });
-  console.info("Bid placed")
 }
 
 // Generatively populate the websire with auctions
@@ -213,12 +185,12 @@ function generateItems() {
 
     let bidRow = document.createElement("tr");
     tableBody.appendChild(bidRow);
-    
+
     let bidTitle = document.createElement("th");
     bidTitle.innerHTML = "Current bid:"
     bidTitle.scope = "row";
     bidRow.appendChild(bidTitle);
-    
+
     let bid = document.createElement("td");
     bid.innerHTML = "£-.-- [- bids]"
     bid.id = "current-bid-" + i
@@ -226,21 +198,21 @@ function generateItems() {
 
     let timeRow = document.createElement("tr");
     tableBody.appendChild(timeRow);
-    
+
     let timeTitle = document.createElement("th");
     timeTitle.innerHTML = "Time left:"
     timeTitle.scope = "row";
     timeRow.appendChild(timeTitle);
-    
+
     let time = document.createElement("td");
     time.id = "time-left-" + i
     timeRow.appendChild(time);
-    
+
     // Auction actions
     let buttonGroup = document.createElement("div");
     buttonGroup.classList.add("btn-group");
     card.appendChild(buttonGroup)
-    
+
     let infoButton = document.createElement("button");
     infoButton.type = "button"
     infoButton.href = "#";
@@ -249,7 +221,7 @@ function generateItems() {
     infoButton.onclick = function () { openInfo(this.id); }
     infoButton.id = "info-button-" + i
     buttonGroup.appendChild(infoButton);
-    
+
     let bidButton = document.createElement("button");
     bidButton.type = "button"
     bidButton.href = "#";
@@ -284,18 +256,16 @@ function dataListener() {
   db.collection("auction-live").doc("items").onSnapshot(function (doc) {
     console.log("Database read from dataListener()")
     let data = doc.data()
-    for (let i in data) {
-      let item = data[i]
-      let itemNumber = Number(i.substring(0, 2))
-      let cb = document.getElementById("current-bid-" + itemNumber)
+    console.log(data)
+    for (key in data) {
+      let cb = document.getElementById("current-bid-" + Number(key))
+      let bids = data[key]
       // Extract bid data
-      let bidCount = (Object.keys(item).length - 1) / 2
-      let currBid = "bid" + bidCount
-      let currFloat = item[currBid]
-      let currPound = Number.parseFloat(currFloat).toFixed(2)
+      let bidCount = (Object.keys(bids).length - 1) / 2
+      let currPound = Number.parseFloat(bids["bid" + bidCount]).toFixed(2)
       // Check if the user is winning
       if (auth.currentUser) {
-        let userWinning = item["bid" + bidCount + "-user"] == auth.currentUser.uid
+        let userWinning = bids["bid" + bidCount + "-user"] == auth.currentUser.uid
       }
       // Add bid data to HTML
       cb.innerHTML = "£" + currPound + " [" + bidCount + " bid" + (bidCount != 1 ? "s" : "") + "]"
@@ -306,21 +276,17 @@ function dataListener() {
 function resetLive() {
   console.log("Resetting live tracker")
   let docRef = db.collection("auction-live").doc("items");
-  let auctions = $(".card");
-  auctions.forEach(auction => {
-    console.log(auction)
-  });
-  let itemName = "00 - " + items[0]
+  let itemId = "0".padStart(5, "0")
   docRef.set({
-    [itemName]: {
+    [itemId]: {
       bid0: startPrices[0]["bid0"]["amount"],
     }
   })
   console.log("Database write from resetLive()")
   for (i = 1; i < numberOfItems; i++) {
-    let itemName = (i.toString().length < 2 ? "0" + i : i) + " - " + items[i]
+    let itemId = i.toString().padStart(5, "0")
     docRef.update({
-      [itemName]: {
+      [itemId]: {
         bid0: startPrices[i]["bid0"]["amount"],
       }
     })
@@ -332,8 +298,8 @@ function resetStore() {
   console.log("Resetting auction storage")
   let batch = db.batch();
   for (i = 0; i < numberOfItems; i++) {
-    let itemName = (i.toString().length < 2 ? "0" + i : i) + " - " + items[i]
-    let currentItem = db.collection("auction-store").doc(itemName);
+    let itemId = i.toString().padStart(5, "0")
+    let currentItem = db.collection("auction-store").doc(itemId);
     batch.set(currentItem, startPrices[i])
   }
   batch.commit()
