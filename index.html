@@ -36,14 +36,14 @@
 
   <script>
     // Your web app's Firebase configuration
-    var firebaseConfig = {
-    apiKey: "find in firebase project settings",
-    authDomain: "find in firebase project settings",
-    databaseURL: "find in firebase project settings",
-    projectId: "find in firebase project settings",
-    storageBucket: "find in firebase project settings",
-    messagingSenderId: "find in firebase project settings",
-    appId: "find in firebase project settings"
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAYOYDuMKGGjTSJL5uDzG5hjQ6y_vYPiI",
+      authDomain: "auction-website-b12fc.firebaseapp.com",
+      databaseURL: "https://auction-website-b12fc.firebaseio.com",
+      projectId: "auction-website-b12fc",
+      storageBucket: "auction-website-b12fc.appspot.com",
+      messagingSenderId: "791747024664",
+      appId: "1:791747024664:web:215a222a81c6d0c2aeb06d"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
@@ -131,10 +131,20 @@
         </div>
         <div class="modal-body">
           <p>You are about to place a bid on <strong id="bid-modal-subtitle"></strong></p>
-          <form>
-            <div class="form-floating mb-3">
-              <input type="amount" class="form-control" id="amount-input" placeholder="amount" required>
-              <label for="amount-input">Amount</label>
+          <form class="row gx-3 gy-2 align-items-center">
+            <div class="col-sm-3">
+              <div class="form-floating mb-3">
+                <label for="amount-input">Amount</label>
+                <input type="amount" class="form-control" id="amount-input" placeholder="amount" required>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="autoSizingCheck2">
+                <label class="form-check-label" for="autoSizingCheck2">
+                  Confirm
+                </label>
+              </div>
             </div>
 
           </form>
