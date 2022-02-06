@@ -149,7 +149,7 @@ function placeBid() {
     liveRef.get().then(function (doc) {
       console.log("Database read from placeBid()")
       let thisItem = doc.data()[itemId];
-      let bids = (Object.keys(thisItem).length - 1) / 2
+      let bids = (Object.keys(thisItem).length - 1) / 3
       let currentBid = thisItem["bid" + bids]
       if (amount >= 1 + currentBid) {
         keyStem = itemId + ".bid" + (bids + 1)
@@ -299,7 +299,7 @@ function dataListener() {
       let cb = document.getElementById("current-bid-" + Number(key))
       let bids = data[key]
       // Extract bid data
-      let bidCount = (Object.keys(bids).length - 1) / 2
+      let bidCount = (Object.keys(bids).length - 1) / 3
       let currPound = Number.parseFloat(bids["bid" + bidCount]).toFixed(2)
       // Check if the user is winning
       if (auth.currentUser) {
