@@ -59,25 +59,35 @@ for (let i = 0; i < numberOfItems; i++) {
     }
   })
 }
+
 // Convert time to string for HTML clocks
-function timeRemaining(_endTime) {
-  let elapsed = new Date().getTime() / 1000;
-  let totalSec = _endTime - elapsed;
-  let h = parseInt(totalSec / 3600);
-  let m = parseInt(totalSec / 60) % 60;
-  let s = parseInt(totalSec % 60, 10);
-  let _string = h + "h " + m + "m " + s + "s";
-  return _string
+function timeBetween(start, end) {
+  let _string = ""
+  let secsRemaining = end - start;
+  let d = parseInt(secsRemaining / 86400);
+  let h = parseInt(secsRemaining % 86400 / 3600);
+  let m = parseInt(secsRemaining % 3600 / 60);
+  let s = parseInt(secsRemaining % 60);
+  if (d) { _string = _string + d + "d " }
+  if (h) { _string = _string + h + "h " }
+  if (m) { _string = _string + m + "m " }
+  if (s) { _string = _string + s + "s " }
+  return _string.trim()
 }
 
 // Set time on HTML clocks
 function setClocks() {
-  for (i = 0; i < numberOfItems; i++) {
-    timeLeft = timeRemaining(endTimes[i])
+  let nowTime = new Date().getTime() / 1000;
+  for (i = 0; i < startingPrices.length; i++) {
+    timeLeft = timeBetween(nowTime, endTimes[i])
     let timer = document.getElementById("time-left-" + i)
-    if (timeLeft.includes("-")) {
+    // remove finished auction after 5 minutes
+    if (endTimes[i] - nowTime < -300) {
+      document.getElementById("auction-" + i).parentElement.style.display = "none"
+      // disable bidding on finished auctions
+    } else if (endTimes[i] - nowTime < 0) {
       timer.innerHTML = "Auction Complete";
-      $("#bid-button-" + i).attr('disabled', '')
+      document.getElementById("bid-button-" + i).setAttribute('disabled', '')
     } else {
       timer.innerHTML = timeLeft;
     }
