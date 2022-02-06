@@ -289,6 +289,10 @@ function populateAuctionGrid() {
   if (demoAuction) { generateRandomAuctions() };
 }
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function dataListener() {
   // Listen for updates in active auctions
   db.collection("auction-live").doc("items").onSnapshot(function (doc) {
@@ -305,7 +309,7 @@ function dataListener() {
         let userWinning = bids["bid" + bidCount + "-user"] == auth.currentUser.uid
       }
       // Add bid data to HTML
-      cb.innerHTML = "£" + currPound + " [" + bidCount + " bid" + (bidCount != 1 ? "s" : "") + "]"
+      cb.innerHTML = "£" + numberWithCommas(currPound) + " [" + bidCount + " bid" + (bidCount != 1 ? "s" : "") + "]"
     }
   })
 }
