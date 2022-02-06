@@ -1,15 +1,20 @@
-let numberOfItems = 12
-let popupInfo = [];
-let popupTitle = [];
-let popupImage = [];
-startingPrices = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
+// For a real auction, set this to false
+let demoAuction = true;
+// For a real auction, populate these arrays
+let primaryImages = [];
+let titles = [];
+let subtitles = [];
+let details = [];
+let secondaryImages = [];
+let startingPrices = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
+let endTimes = [];
 
 // Random auction information
 function generateRandomAuctions() {
   // Random cat images
   document.querySelectorAll(".card > img").forEach(img => {
     img.src = "https://cataas.com/cat/cute?random=" + Math.random();
-    popupImage.push(img.src)
+    secondaryImages.push(img.src)
   });
   // Random cat names
   $.getJSON(
@@ -18,7 +23,7 @@ function generateRandomAuctions() {
     function (data) {
       data.forEach((elem, idx) => {
         document.querySelector("#auction-" + idx + " > div > h5").innerHTML = elem.name;
-        popupTitle.push(elem.name);
+        titles.push(elem.name);
       });
     }
   );
@@ -29,30 +34,25 @@ function generateRandomAuctions() {
     function (data) {
       data.forEach((elem, idx) => {
         document.querySelector("#auction-" + idx + " > div > p").innerHTML = elem.short_sentence;
-        popupInfo.push(elem.very_long_sentence)
+        details.push(elem.very_long_sentence)
       });
     }
   );
 }
 
+// Get the date of the next nth day of the week
+function getNextDayOfWeek(dayOfWeek) {
+  today = new Date();
+  today.setDate(today.getDate() + (7 + dayOfWeek - today.getDay()) % 7);
+  return today
 }
 
-// Array of end times (YYYY-[0-11]-[1-31]-[0-23]-[0-59]-[0-59])
-let endDate1 = new Date(2022, 8, 27, 21, 29);
-let endDate2 = new Date(2022, 8, 28, 21, 29);
-console.log("Auctions will end:\n" + endDate1 + "\n" + endDate2);
-let endTime1 = endDate1.getTime() / 1000;
-let endTime2 = endDate2.getTime() / 1000;
-let endTimes = [];
+// Initial state of auction, used for resetting database
 let startPrices = [];
-firstNight = [0, 1, 3, 5, 7];
-secondNight = [0, 1, 2, 4, 6];
-minimumBid = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
-for (let i = 0; i < numberOfItems; i++) {
-  if (secondNight.includes(i)) {
-    endTimes.push(endTime2)
-  } else {
-    endTimes.push(endTime1)
+for (let i = 0; i < startingPrices.length; i++) {
+  if (demoAuction) {
+    let endTime = getNextDayOfWeek(i).setHours(18 + (i % 2), 0)
+    endTimes.push(endTime / 1000)
   }
   startPrices.push({
     bid0: {
@@ -180,6 +180,7 @@ function generateItems() {
 
     let image = document.createElement("img");
     image.classList.add("card-img-top");
+    image.src = primaryImages[i];
     card.appendChild(image);
 
     let body = document.createElement("div");
@@ -188,11 +189,13 @@ function generateItems() {
 
     let title = document.createElement("h5");
     title.classList.add("title");
+    title.innerText = titles[i];
     body.appendChild(title);
 
-    let text = document.createElement("p");
-    text.classList.add("card-text");
-    body.appendChild(text);
+    let subtitle = document.createElement("p");
+    subtitle.classList.add("card-subtitle");
+    subtitle.innerText = subtitles[i];
+    body.appendChild(subtitle);
 
     // Auction status
     let statusTable = document.createElement("table");
@@ -252,6 +255,7 @@ function generateItems() {
 
     auctionGrid.appendChild(col);
   });
+  if (demoAuction) { generateRandomAuctions() };
 }
 
 function dataListener() {

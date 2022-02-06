@@ -4,16 +4,16 @@ bidModal = new bootstrap.Modal(document.getElementById('bid-modal'))
 
 function openInfo(id) {
   let i = id.match("[0-9]+");
-  document.getElementById('info-modal-title').innerText = popupTitle[i]
-  document.getElementById('info-modal-desc').innerHTML = popupInfo[i]
-  document.getElementById('info-modal-img').src = popupImage[i];
+  document.getElementById('info-modal-title').innerText = titles[i]
+  document.getElementById('info-modal-desc').innerHTML = details[i]
+  document.getElementById('info-modal-img').src = secondaryImages[i];
   document.querySelector("#info-modal > div > div > div.modal-footer > button.btn.btn-primary").id = "info-modal-submit-bid-btn-" + i
   infoModal.show()
 }
 
 function openBid(id) {
   let i = id.match('[0-9]+');
-  document.getElementById('bid-modal-subtitle').innerText = popupTitle[i]
+  document.getElementById('bid-modal-subtitle').innerText = titles[i]
   document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary").id = "bid-modal-submit-bid-btn-" + i
   loggedIn = auth.currentUser && auth.currentUser.displayName
   if (loggedIn) {
