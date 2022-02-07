@@ -14,6 +14,7 @@ function openInfo(id) {
 function openBid(id) {
   let i = id.match('[0-9]+');
   document.getElementById("amount-input").value = ""
+  document.getElementById("amount-input").classList.remove("is-invalid")
   document.getElementById('bid-modal-subtitle').innerText = titles[i]
   document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary").id = "bid-modal-submit-bid-btn-" + i
   loggedIn = auth.currentUser && auth.currentUser.displayName
