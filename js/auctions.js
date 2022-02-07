@@ -42,18 +42,13 @@ function generateRandomAuctions() {
   );
 }
 
-// Get the date of the next nth day of the week (Sunday is day 0)
-function getNextDayOfWeek(dayOfWeek) {
-  today = new Date();
-  today.setDate(today.getDate() + (7 + dayOfWeek - today.getDay()) % 7);
-  return today
-}
-
 // Initial state of auction, used for resetting database
 let startPrices = [];
 for (let i = 0; i < startingPrices.length; i++) {
   if (demoAuction) {
-    let endTime = getNextDayOfWeek(i).setHours(18 + (i % 2), 0)
+    let now = new Date();
+    let endTime = new Date().setHours(8 + i, 0)
+    if (endTime - now < 0) { endTime = endTime + 86400 }
     endTimes.push(endTime / 1000)
   }
   startPrices.push({
@@ -90,7 +85,7 @@ function setClocks() {
     if (endTimes[i] - nowTime < -300) {
       document.getElementById("auction-" + i).parentElement.style.display = "none"
       if (demoAuction) {
-        endTimes[i] = endTimes[i] + 604800 // add 1 week
+        endTimes[i] = endTimes[i] + 86400 // add 1 day
         document.getElementById("auction-" + i).parentElement.remove()
         resetLive(i);
         resetStore(i);
