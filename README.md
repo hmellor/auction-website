@@ -37,7 +37,7 @@ First, set `demoAuction=False` (this will keep the cats at bay).
 
 Then, populate all of the arrays at the top of `js/auctions.js` with the information for of the items you'll be putting up for auction.
 
-The only complicated option is `endTimes`, which is a list of times (relative to epoch) **in seconds**. See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.
+The only complicated option is `endTimes`, which is a list of times (relative to epoch) **in milliseconds**. See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.
 
 ### Firebase setup
 Here we will cover how to set up your Firebase project and then how to enable the Firebase authentication and database respectively.

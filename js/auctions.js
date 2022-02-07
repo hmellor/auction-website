@@ -7,7 +7,7 @@ let subtitles = [];
 let details = [];
 let secondaryImages = [];
 let startingPrices = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
-let endTimes = [];
+let endTimes = []; // Make sure to fix these to UTC time so they don't change with the users timezone
 
 // Random auction information
 function generateRandomAuctions() {
@@ -47,9 +47,9 @@ let startPrices = [];
 for (let i = 0; i < startingPrices.length; i++) {
   if (demoAuction) {
     let now = new Date();
-    let endTime = new Date().setHours(8 + i, 0)
-    if (endTime - now < 0) { endTime = endTime + 86400 }
-    endTimes.push(endTime / 1000)
+    let endTime = new Date().setHours(8 + i, 0, 0, 0)
+    if (endTime - now < 0) { endTime = new Date(endTime).setDate(now.getDate() + 1) }
+    endTimes.push(endTime)
   }
   startPrices.push({
     bid0: {
@@ -63,7 +63,7 @@ for (let i = 0; i < startingPrices.length; i++) {
 // Convert time to string for HTML clocks
 function timeBetween(start, end) {
   let _string = ""
-  let secsRemaining = end - start;
+  let secsRemaining = (end - start) / 1000;
   let d = parseInt(secsRemaining / 86400);
   let h = parseInt(secsRemaining % 86400 / 3600);
   let m = parseInt(secsRemaining % 3600 / 60);
@@ -77,15 +77,15 @@ function timeBetween(start, end) {
 
 // Set time on HTML clocks
 function setClocks() {
-  let nowTime = new Date().getTime() / 1000;
+  let now = new Date();
+  let nowTime = now.getTime();
   for (i = 0; i < startingPrices.length; i++) {
-    timeLeft = timeBetween(nowTime, endTimes[i])
     let timer = document.getElementById("time-left-" + i)
     // remove finished auction after 5 minutes
     if (endTimes[i] - nowTime < -300) {
       document.getElementById("auction-" + i).parentElement.style.display = "none"
       if (demoAuction) {
-        endTimes[i] = endTimes[i] + 86400 // add 1 day
+        endTimes[i] = new Date(endTimes[i]).setDate(now.getDate() + 1) // add 1 day
         document.getElementById("auction-" + i).parentElement.remove()
         resetLive(i);
         resetStore(i);
@@ -98,7 +98,7 @@ function setClocks() {
       timer.innerHTML = "Auction Complete";
       document.getElementById("bid-button-" + i).setAttribute('disabled', '')
     } else {
-      timer.innerHTML = timeLeft;
+      timer.innerHTML = timeBetween(nowTime, endTimes[i]);
     }
   }
   setTimeout(setClocks, 1000);
@@ -106,7 +106,7 @@ function setClocks() {
 
 // Place a bid on an item
 function placeBid() {
-  let nowTime = new Date().getTime() / 1000;
+  let nowTime = new Date().getTime();
   let modalBidButton = document.querySelector("#bid-modal > div > div > div.modal-footer > button.btn.btn-primary")
   modalBidButton.setAttribute('disabled', '') // disable the button while we check
   let i = modalBidButton.id.match("[0-9]+");
