@@ -1,6 +1,6 @@
 // Imports
 import { auth, db } from "./firebase.js";
-import { doc, setDoc, updateDoc, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, updateDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
 // For a real auction, set this to false
 let demoAuction = true;
@@ -14,10 +14,10 @@ function generateRandomAuctionData() {
     "https://random-data-api.com/api/name/random_name",
     { size: auctions.length },
     (data) => {
-      data.forEach((elem, i) => { 
+      data.forEach((elem, i) => {
         cards[i].querySelector(".title").innerText = elem.name
         cards[i].dataset.bsTitle = elem.name
-    });
+      });
     }
   );
   // Random lorem ipsum cat descriptions
@@ -72,8 +72,7 @@ export function setClocks() {
       if (demoAuction) {
         auctions[i].endTime = new Date(auctions[i].endTime).setDate(now.getDate() + 1) // add 1 day
         document.getElementById("auction-" + i).parentElement.remove()
-        resetLive(i);
-        resetStore(i);
+        resetItem(i);
         auctionGrid = document.getElementById("auction-grid");
         auctionCard = generateAuctionCard(i);
         auctionGrid.appendChild(auctionCard);
@@ -101,10 +100,10 @@ function generateAuctionCard(auction) {
 
   let card = document.createElement("div");
   card.classList.add("card");
-  card.dataset.bsTitle=auction.title
-  card.dataset.bsDetail=auction.detail
-  card.dataset.bsPrimaryImage=auction.primaryImage
-  card.dataset.bsSecondaryImage=auction.secondaryImage
+  card.dataset.bsTitle = auction.title
+  card.dataset.bsDetail = auction.detail
+  card.dataset.bsPrimaryImage = auction.primaryImage
+  card.dataset.bsSecondaryImage = auction.secondaryImage
   card.id = "auction-" + auction.idx
   col.appendChild(card);
 
@@ -168,8 +167,8 @@ function generateAuctionCard(auction) {
   let infoButton = document.createElement("button");
   infoButton.type = "button"
   infoButton.classList.add("btn", "btn-secondary")
-  infoButton.dataset.bsToggle="modal"
-  infoButton.dataset.bsTarget="#info-modal"
+  infoButton.dataset.bsToggle = "modal"
+  infoButton.dataset.bsTarget = "#info-modal"
   infoButton.innerText = "Info";
   buttonGroup.appendChild(infoButton);
 
@@ -177,8 +176,8 @@ function generateAuctionCard(auction) {
   bidButton.type = "button"
   bidButton.classList.add("btn", "btn-primary")
   bidButton.innerText = "Submit bid";
-  bidButton.dataset.bsToggle="modal"
-  bidButton.dataset.bsTarget="#bid-modal"
+  bidButton.dataset.bsToggle = "modal"
+  bidButton.dataset.bsTarget = "#bid-modal"
   buttonGroup.appendChild(bidButton);
 
   return col
@@ -201,15 +200,21 @@ function numberWithCommas(x) {
 
 export function dataListener() {
   // Listen for updates in active auctions
-  onSnapshot(doc(db, "auction-live", "items"), (doc) => {
-    console.log("Database read from dataListener()")
-    let data = doc.data()
-    for (let key in data) {
-      let cb = document.getElementById("current-bid-" + Number(key))
-      let bids = data[key]
+  onSnapshot(doc(db, "auction", "items"), (doc) => {
+    console.debug("dataListener() read from auction/items")
+    // Parse flat document data into structured Object
+    let data = {}
+    for (const [key, details] of Object.entries(doc.data())) {
+      let [item, bid] = key.split("_").map(i => Number(i.match(/\d+/)))
+      data[item] = data[item] || {}
+      data[item][bid] = details.amount
+    }
+    // Use structured Object to populate the "Current bid" for each item
+    for (const [item, bids] of Object.entries(data)) {
+      let cb = document.getElementById(`current-bid-${item}`)
       // Extract bid data
-      let bidCount = (Object.keys(bids).length - 1) / 2
-      let currPound = Number.parseFloat(bids["bid" + bidCount]).toFixed(2)
+      let bidCount = Object.keys(bids).length - 1
+      let currPound = bids[bidCount].toFixed(2)
       // Check if the user is winning
       if (auth.currentUser) {
         let userWinning = bids["bid" + bidCount + "-user"] == auth.currentUser.uid
@@ -220,60 +225,33 @@ export function dataListener() {
   })
 }
 
-function resetLive(i) {
-  const docRef = doc(db, "auction-live", "items");
-  let itemId = i.toString().padStart(5, "0")
-  updateDoc(docRef, {
-    [itemId]: {
-      bid0: auctions[i].startingPrice,
-    }
-  })
-  console.log("Database write from resetLive()")
-}
-
-function resetAllLive() {
-  console.log("Resetting live tracker")
-  for (let i = 0; i < auctions.length; i++) {
-    resetLive(i);
-  }
-}
-
-function resetStore(i) {
-  let itemId = i.toString().padStart(5, "0")
-  const docRef = doc(db, "auction-store", itemId);
-  setDoc(docRef, {
-    bid0: {
-      bidder: String(i),
-      amount: auctions[i].startingPrice,
-      time: Date().substring(0, 24)
-    }
-  })
-  console.log("Database write from resetStore()")
-}
-
-function resetAllStore() {
-  console.log("Resetting auction storage")
-  const batch = writeBatch(db);
-  for (let i = 0; i < auctions.length; i++) {
-    let itemId = i.toString().padStart(5, "0")
-    let currentItem = doc(db, "auction-store", itemId);
-    batch.set(currentItem, {
-      bid0: {
-        bidder: String(i),
-        amount: auctions[i].startingPrice,
-        time: Date().substring(0, 24)
-      }
+function resetItem(i) {
+  const docRef = doc(db, "auction", "items")
+  const itemId = `item${i.toString().padStart(5, "0")}`
+  // Find all bids for item i
+  let initialState = {}
+  getDoc(docRef).then((doc) => {
+    console.debug("resetItem() read from auction/items")
+    let keys = Object.keys(doc.data()).sort()
+    keys.filter((key) => key.includes(itemId)).forEach((key, idx) => {
+      // Mark all except bid00000 to be deleted
+      initialState[key] = idx ? deleteField() : { amount: auctions[i].startingPrice }
     })
-  }
-  batch.commit()
-  console.log(auctions.length + " database writes from resetAllStore()")
+  }).then(() => {
+    updateDoc(docRef, initialState)
+    console.debug("resetItem() write to from auction/items")
+  })
 }
 
 function resetAll() {
-  resetAllLive();
-  resetAllStore();
+  let initialState = {}
+  for (let i = 0; i < auctions.length; i++) {
+    let field = `item${i.toString().padStart(5, "0")}_bid00000`
+    initialState[field] = { amount: auctions[i].startingPrice }
+  }
+  setDoc(doc(db, "auction", "items"), initialState)
+  console.debug("resetAll() write to auction/items")
 }
 
+window.resetItem = resetItem
 window.resetAll = resetAll
-window.resetAllLive = resetAllLive
-window.resetAllStore = resetAllStore
