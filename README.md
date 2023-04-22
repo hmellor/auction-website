@@ -33,28 +33,32 @@ It looks great on mobile too!
 Here we will cover how to add your own information to the auctions themselves, then how to most a local server to see your changes and finally how to connect it all to Firebase to enable user login and bidding.
 
 ### Adding auction information
-First, set `demoAuction=False` (this will keep the cats at bay).
+First, set `demoAuction=False` in `js/auctions.js` (this will keep the cats at bay).
 
-Then, populate all of the arrays at the top of `js/auctions.js` with the information for of the items you'll be putting up for auction.
-
-The only complicated option is `endTimes`, which is a list of times (relative to epoch) **in milliseconds**. See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.
+Then, populate the `Object` at the bottom of `js/firebase.js` with the information for of the items you'll be putting up for auction. The fields are:
+- `primaryImage` (`String`): path or URL to the primary image
+- `title` (`String`): auction title
+- `subtitle` (`String`): auction subtitle
+- `detail` (`String`): auction detail text
+- `secondaryImage` (`String`): path or URL to the secondary image
+- `startingPrice` (`Number`): auction price,
+- `endTime` (`Number`): auction end time relative to epoch **in milliseconds**. (See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.)
 
 ### Firebase setup
 Here we will cover how to set up your Firebase project and then how to enable the Firebase authentication and database respectively.
 
 #### Creating a project
 You can create a project using the following steps:
-- Head to the [Firebase website](https://console.firebase.google.com/) where you can manage your projects.
-- Click `Add project` and choose your project's name.
+- Head to the [Firebase console](https://console.firebase.google.com/) where you can manage your projects.
+- Click `Add project` and name your project.
 - Then you may enable or disable Google Analytics at your discretion.
-- You will then be taken to your project's console (https://console.firebase.google.com/project/your-project-name/overview) where you will add a web app to your project by clicking on the relevant button and chosing a name for the app (this is arbitrary and only to identify your app within the project if, for example, you had multiple apps).
-- Now that you have created an app you should be shown a code snipped containing `firebaseConfig`. Copy everything inside `firebaseConfig` to the `firebaseConfig` variable in `index.html`.
-- Finally you will want to update the version of the Firebase SDKs that are imported after [line 33 of `index.html`](https://github.com/HMellor/auction-website/blob/master/index.html#L33). The most recent version will be shown in the script tag above `firebaseConfig` when you create your project.
+- You will then be taken to your project's overview where you will add a web app to your project by clicking `Add app` and selecting the web app icon (the app's name is arbitrary and is only used to identify the app within your project if, for example, you had multiple apps in the same project).
+- Now that you have created an app you should be shown a code snippet containing `firebaseConfig`. Copy everything inside `firebaseConfig` to the `firebaseConfig` variable in `index.html`.
 
-(The code snippet containing `firebaseConfig` and the current version can be found in general project settings if you missed it earlier)
+> The code snippet containing `firebaseConfig` and the current version can be found in `Project settings` if you need to refer to it later.
 
 #### Authentication
-Setting up authentication is very simple. Head to your project's console and click on Authentication in the menu on the left. Then go to the Sign-in method tab and enable toggle switch for the Anonymous sign-in provider.
+Head to your project's console and click on Authentication in the menu on the left. Then go to the Sign-in method tab and enable toggle switch for the Anonymous sign-in provider.
 
 #### Database
 Setting up the database is a little more involved so here are the steps you must take:
@@ -107,7 +111,7 @@ To create an admin account:
 - Host your website either locally or on GitHub Pages and log in to your website.
 - Then go to your Firestore console and find the document for the user you just created.
 - There should be a field in the document called `admin` which has the value `"false"`. You must now create a password (or hash) that enables admin access and set the `admin` field to this value.
-- With your admin password chosen, go to your Firestore rules and replace `"insert long random secret string"` with it.
+- Go to your Firestore rules and replace `"insert long random secret string"` with your admin password.
 - You have now created your admin account.
 
 To initialise the auctions:
@@ -117,4 +121,4 @@ To initialise the auctions:
 resetAll()
 ```
 - This will wipe all documents in the `auction-live` and `auction-store` collections and create auctions with the titles, info and reserve prices you defined earlier (as long as you are admin).
-- Your auction is now ready for your event.
+- Your auction is now ready.

@@ -28,29 +28,6 @@
 </head>
 
 <body>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
-    import { getAuth } from "firebase/auth";
-    import { getFirestore } from "firebase/firestore";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCAYOYDuMKGGjTSJL5uDzG5hjQ6y_vYPiI",
-      authDomain: "auction-website-b12fc.firebaseapp.com",
-      databaseURL: "https://auction-website-b12fc.firebaseio.com",
-      projectId: "auction-website-b12fc",
-      storageBucket: "auction-website-b12fc.appspot.com",
-      messagingSenderId: "791747024664",
-      appId: "1:791747024664:web:215a222a81c6d0c2aeb06d"
-    };
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-  </script>
   <!-- Navbar -->
   <nav class="navbar navbar-dark bg-primary">
     <div class="container-fluid">
@@ -152,10 +129,12 @@
   </div>
   <!-- Custom JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script src="./js/auctions.js"></script>
-  <script src="./js/popups.js"></script>
+  <script type="module" src="./js/auctions.js"></script>
+  <script type="module" src="./js/popups.js"></script>
   <!-- Create anonymous account -->
-  <script>
+  <script type="module">
+    import { populateAuctionGrid, setClocks, dataListener } from "./js/auctions.js";
+    import { autoLogin } from "./js/popups.js";
     populateAuctionGrid();
     setClocks();
     dataListener()

@@ -1,63 +1,49 @@
+// Imports
+import { auth, db, auctions } from "./firebase.js";
+import { bidModal } from "./popups.js";
+import { doc, getDoc, setDoc, updateDoc, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
+
 // For a real auction, set this to false
 let demoAuction = true;
-// For a real auction, populate these arrays
-let primaryImages = [];
-let titles = [];
-let subtitles = [];
-let details = [];
-let secondaryImages = [];
-let startingPrices = [55, 60, 20, 0, 4, 0, 99, 0, 12, 6, 3, 7];
-let endTimes = []; // Make sure to fix these to UTC time so they don't change with the users timezone
 
 // Random auction information
 function generateRandomAuctions() {
   // Random cat images
-  document.querySelectorAll(".card > img").forEach(img => {
-    img.src = "https://cataas.com/cat/cute?random=" + Math.random();
-    primaryImages.push(img.src);
-    secondaryImages.push(img.src);
+  document.querySelectorAll(".card > img").forEach((img, idx) => {
+    img.src = "https://cataas.com/cat/cute?random=" + idx;
+    auctions[idx].primaryImage = img.src;
+    auctions[idx].secondaryImage = img.src;
   });
   // Random cat names
   $.getJSON(
     "https://random-data-api.com/api/name/random_name",
-    { size: startingPrices.length },
+    { size: auctions.length },
     function (data) {
       data.forEach((elem, idx) => {
         document.querySelector("#auction-" + idx + " > div > h5").innerHTML = elem.name;
-        titles.push(elem.name);
+        auctions[idx].title = elem.name;
       });
     }
   );
   // Random lorem ipsum cat descriptions
   $.getJSON(
     "https://random-data-api.com/api/lorem_ipsum/random_lorem_ipsum",
-    { size: startingPrices.length },
+    { size: auctions.length },
     function (data) {
       data.forEach((elem, idx) => {
         document.querySelector("#auction-" + idx + " > div > p").innerHTML = elem.short_sentence;
-        subtitles.push(elem.short_sentence);
-        details.push(elem.very_long_sentence);
+        auctions[idx].subtitle = elem.short_sentence;
+        auctions[idx].detail = elem.very_long_sentence;
       });
     }
   );
-}
-
-// Initial state of auction, used for resetting database
-let startPrices = [];
-for (let i = 0; i < startingPrices.length; i++) {
-  if (demoAuction) {
+  // Random end times
+  for (let i = 0; i < auctions.length; i++) {
     let now = new Date();
     let endTime = new Date().setHours(8 + i, 0, 0, 0)
     if (endTime - now < 0) { endTime = new Date(endTime).setDate(now.getDate() + 1) }
-    endTimes.push(endTime)
+    auctions[i].endTime = endTime
   }
-  startPrices.push({
-    bid0: {
-      bidder: String(i),
-      amount: startingPrices[i],
-      time: Date().substring(0, 24)
-    }
-  })
 }
 
 // Convert time to string for HTML clocks
@@ -76,16 +62,16 @@ function timeBetween(start, end) {
 }
 
 // Set time on HTML clocks
-function setClocks() {
+export function setClocks() {
   let now = new Date();
   let nowTime = now.getTime();
-  for (i = 0; i < startingPrices.length; i++) {
+  for (let i = 0; i < auctions.length; i++) {
     let timer = document.getElementById("time-left-" + i)
     // remove finished auction after 5 minutes
-    if (endTimes[i] - nowTime < -300) {
+    if (auctions[i].endTime - nowTime < -300) {
       document.getElementById("auction-" + i).parentElement.style.display = "none"
       if (demoAuction) {
-        endTimes[i] = new Date(endTimes[i]).setDate(now.getDate() + 1) // add 1 day
+        auctions[i].endTime = new Date(auctions[i].endTime).setDate(now.getDate() + 1) // add 1 day
         document.getElementById("auction-" + i).parentElement.remove()
         resetLive(i);
         resetStore(i);
@@ -94,11 +80,11 @@ function setClocks() {
         auctionGrid.appendChild(auctionCard);
       }
       // disable bidding on finished auctions
-    } else if (endTimes[i] - nowTime < 0) {
+    } else if (auctions[i].endTime - nowTime < 0) {
       timer.innerHTML = "Auction Complete";
       document.getElementById("bid-button-" + i).setAttribute('disabled', '')
     } else {
-      timer.innerHTML = timeBetween(nowTime, endTimes[i]);
+      timer.innerHTML = timeBetween(nowTime, auctions[i].endTime);
     }
   }
   setTimeout(setClocks, 1000);
@@ -114,7 +100,7 @@ function placeBid() {
   // Cleanse input
   let amountElement = document.getElementById("amount-input")
   let amount = Number(amountElement.value)
-  if (endTimes[i] - nowTime < 0) {
+  if (auctions[i].endTime - nowTime < 0) {
     feedback.innerText = "The auction is already over!"
     amountElement.classList.add("is-invalid")
     setTimeout(() => {
@@ -138,23 +124,23 @@ function placeBid() {
     let user = auth.currentUser;
     let itemId = i.toString().padStart(5, "0")
     // Documents to check and write to
-    let liveRef = db.collection("auction-live").doc("items")
-    let storeRef = db.collection("auction-store").doc(itemId)
+    const liveRef = doc(db, "auction-live", "items");
+    const storeRef = doc(db, "auction-store", itemId);
     // Check live document
-    liveRef.get().then(function (doc) {
+    getDoc(liveRef).then(function (doc) {
       console.log("Database read from placeBid()")
       let thisItem = doc.data()[itemId];
       let bids = (Object.keys(thisItem).length - 1) / 2
       let currentBid = thisItem["bid" + bids]
       if (amount >= 1 + currentBid) {
-        keyStem = itemId + ".bid" + (bids + 1)
-        liveRef.update({
+        let keyStem = itemId + ".bid" + (bids + 1)
+        updateDoc(liveRef, {
           [keyStem + "-uid"]: user.uid,
           [keyStem]: amount,
         })
         console.log("Database write from placeBid()")
-        storeKey = "bid" + (bids + 1)
-        storeRef.update({
+        let storeKey = "bid" + (bids + 1)
+        updateDoc(storeRef, {
           [storeKey]: {
             "bidder-username": user.displayName,
             "bidder-uid": user.uid,
@@ -179,25 +165,24 @@ function placeBid() {
   }
 }
 
-function argsort(array) {
+function argsort(array, key) {
   const arrayObject = array.map((value, idx) => { return { value, idx }; });
-  arrayObject.sort((a, b) => (a.value - b.value))
-  return arrayObject.map(data => data.idx);;
+  return arrayObject.sort((a, b) => (a.value[key] - b.value[key]));
 }
 
-function generateAuctionCard(i) {
+function generateAuctionCard(auction) {
   // create auction card
   let col = document.createElement("div");
   col.classList.add("col");
 
   let card = document.createElement("div");
   card.classList.add("card");
-  card.id = "auction-" + i
+  card.id = "auction-" + auction.idx
   col.appendChild(card);
 
   let image = document.createElement("img");
   image.classList.add("card-img-top");
-  image.src = primaryImages[i];
+  image.src = auction.value.primaryImage;
   card.appendChild(image);
 
   let body = document.createElement("div");
@@ -206,12 +191,12 @@ function generateAuctionCard(i) {
 
   let title = document.createElement("h5");
   title.classList.add("title");
-  title.innerText = titles[i];
+  title.innerText = auction.value.title;
   body.appendChild(title);
 
   let subtitle = document.createElement("p");
   subtitle.classList.add("card-subtitle");
-  subtitle.innerText = subtitles[i];
+  subtitle.innerText = auction.value.subtitle;
   body.appendChild(subtitle);
 
   // Auction status
@@ -232,7 +217,7 @@ function generateAuctionCard(i) {
 
   let bid = document.createElement("td");
   bid.innerHTML = "£-.-- [- bids]"
-  bid.id = "current-bid-" + i
+  bid.id = "current-bid-" + auction.idx
   bidRow.appendChild(bid);
 
   let timeRow = document.createElement("tr");
@@ -244,7 +229,7 @@ function generateAuctionCard(i) {
   timeRow.appendChild(timeTitle);
 
   let time = document.createElement("td");
-  time.id = "time-left-" + i
+  time.id = "time-left-" + auction.idx
   timeRow.appendChild(time);
 
   // Auction actions
@@ -258,7 +243,7 @@ function generateAuctionCard(i) {
   infoButton.classList.add("btn", "btn-secondary")
   infoButton.innerText = "Info";
   infoButton.onclick = function () { openInfo(this.id); }
-  infoButton.id = "info-button-" + i
+  infoButton.id = "info-button-" + auction.idx
   buttonGroup.appendChild(infoButton);
 
   let bidButton = document.createElement("button");
@@ -267,18 +252,18 @@ function generateAuctionCard(i) {
   bidButton.classList.add("btn", "btn-primary")
   bidButton.innerText = "Submit bid";
   bidButton.onclick = function () { openBid(this.id); }
-  bidButton.id = "bid-button-" + i
+  bidButton.id = "bid-button-" + auction.idx
   buttonGroup.appendChild(bidButton);
 
   return col
 }
 
-// Generatively populate the websire with auctions
-function populateAuctionGrid() {
-  auctionGrid = document.getElementById("auction-grid");
-  let endingSoonest = argsort(endTimes);
-  endingSoonest.forEach((i) => {
-    auctionCard = generateAuctionCard(i);
+// Generatively populate the website with auctions
+export function populateAuctionGrid() {
+  let auctionGrid = document.getElementById("auction-grid");
+  let auctionsSorted = argsort(auctions, "endTime");
+  auctionsSorted.forEach((auction) => {
+    let auctionCard = generateAuctionCard(auction);
     auctionGrid.appendChild(auctionCard);
   });
   if (demoAuction) { generateRandomAuctions() };
@@ -288,12 +273,12 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function dataListener() {
+export function dataListener() {
   // Listen for updates in active auctions
-  db.collection("auction-live").doc("items").onSnapshot(function (doc) {
+  onSnapshot(doc(db, "auction-live", "items"), (doc) => {
     console.log("Database read from dataListener()")
     let data = doc.data()
-    for (key in data) {
+    for (let key in data) {
       let cb = document.getElementById("current-bid-" + Number(key))
       let bids = data[key]
       // Extract bid data
@@ -310,11 +295,11 @@ function dataListener() {
 }
 
 function resetLive(i) {
-  let docRef = db.collection("auction-live").doc("items");
+  const docRef = doc(db, "auction-live", "items");
   let itemId = i.toString().padStart(5, "0")
-  docRef.update({
+  updateDoc(docRef, {
     [itemId]: {
-      bid0: startPrices[i]["bid0"]["amount"],
+      bid0: auctions[i].startingPrice,
     }
   })
   console.log("Database write from resetLive()")
@@ -322,31 +307,48 @@ function resetLive(i) {
 
 function resetAllLive() {
   console.log("Resetting live tracker")
-  for (i = 0; i < startingPrices.length; i++) {
+  for (let i = 0; i < auctions.length; i++) {
     resetLive(i);
   }
 }
 
 function resetStore(i) {
   let itemId = i.toString().padStart(5, "0")
-  let docRef = db.collection("auction-store").doc(itemId);
-  docRef.set(startPrices[i])
+  const docRef = doc(db, "auction-store", itemId);
+  setDoc(docRef, {
+    bid0: {
+      bidder: String(i),
+      amount: auctions[i].startingPrice,
+      time: Date().substring(0, 24)
+    }
+  })
   console.log("Database write from resetStore()")
 }
 
 function resetAllStore() {
   console.log("Resetting auction storage")
-  let batch = db.batch();
-  for (i = 0; i < startingPrices.length; i++) {
+  const batch = writeBatch(db);
+  for (let i = 0; i < auctions.length; i++) {
     let itemId = i.toString().padStart(5, "0")
-    let currentItem = db.collection("auction-store").doc(itemId);
-    batch.set(currentItem, startPrices[i])
+    let currentItem = doc(db, "auction-store", itemId);
+    batch.set(currentItem, {
+      bid0: {
+        bidder: String(i),
+        amount: auctions[i].startingPrice,
+        time: Date().substring(0, 24)
+      }
+    })
   }
   batch.commit()
-  console.log(startingPrices.length + " database writes from resetAllStore()")
+  console.log(auctions.length + " database writes from resetAllStore()")
 }
 
 function resetAll() {
   resetAllLive();
   resetAllStore();
 }
+
+window.placeBid = placeBid
+window.resetAll = resetAll
+window.resetAllLive = resetAllLive
+window.resetAllStore = resetAllStore
