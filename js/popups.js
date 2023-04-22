@@ -49,6 +49,7 @@ function signUp() {
   let user = auth.currentUser;
   updateProfile(user, { displayName: username.value })
   setDoc(doc(db, "users", user.uid), { name: username.value, admin: false })
+  console.debug("signUp() write to users/${auth.currentUser.uid}")
   authButton.innerText = "Sign out"
   document.getElementById('username-display').innerText = "Hi " + username.value
   username.classList.add("is-valid")
@@ -77,9 +78,9 @@ bidModal.addEventListener("show.bs.modal", (event) => {
 // Focus the amount input once bidModal is visible
 bidModal.addEventListener('shown.bs.modal', () => {
   // If not logged in, open signUpModal instead
-  if (authButton.innerText == "Sign in") { 
+  if (authButton.innerText == "Sign in") {
     bidModalObject.hide()
-    signUpModalObject.show() 
+    signUpModalObject.show()
   } else {
     bidModalInput.focus()
   }
@@ -124,36 +125,20 @@ function placeBid() {
     amountElement.classList.add("is-invalid")
     bidModalSubmit.removeAttribute('disabled', '');
   } else {
-    // Checking bid amount
-    // Get item and user info
-    let user = auth.currentUser;
-    let itemId = i.toString().padStart(5, "0")
-    // Documents to check and write to
-    const liveRef = doc(db, "auction-live", "items");
-    const storeRef = doc(db, "auction-store", itemId);
-    // Check live document
-    getDoc(liveRef).then(function (doc) {
-      console.log("Database read from placeBid()")
-      let thisItem = doc.data()[itemId];
-      let bids = (Object.keys(thisItem).length - 1) / 2
-      let currentBid = thisItem["bid" + bids]
+    // Check auction database
+    let docRef = doc(db, "auction", "items");
+    getDoc(docRef).then(function (doc) {
+      console.debug("placeBid() read from auction/items")
+      let data = doc.data()
+      let itemId = `item${i.toString().padStart(5, "0")}`
+      let bids = Object.keys(data).filter((key) => key.includes(itemId))
+      let bidId = `bid${(bids.length).toString().padStart(5, "0")}`
+      let currentBid = data[bids[bids.length - 1]].amount
       if (amount >= 1 + currentBid) {
-        let keyStem = itemId + ".bid" + (bids + 1)
-        updateDoc(liveRef, {
-          [keyStem + "-uid"]: user.uid,
-          [keyStem]: amount,
+        updateDoc(docRef, {
+          [`${itemId}_${bidId}`]: { amount: amount, uid: auth.currentUser.uid },
         })
-        console.log("Database write from placeBid()")
-        let storeKey = "bid" + (bids + 1)
-        updateDoc(storeRef, {
-          [storeKey]: {
-            "bidder-username": user.displayName,
-            "bidder-uid": user.uid,
-            "amount": amount,
-            time: Date().substring(0, 24)
-          }
-        })
-        console.log("Database write from placeBid()")
+        console.debug("placeBid() write to auction/items")
         amountElement.classList.add("is-valid")
         amountElement.classList.remove("is-invalid")
         setTimeout(() => {
