@@ -81,9 +81,12 @@ service cloud.firestore {
     function isLoggedIn() {
     	return exists(/databases/$(database)/documents/users/$(request.auth.uid))
     }
-  	match /users/{user} {
-    	allow read, update, delete: if false;
-    	allow create: if true;
+    // Make sure the uid of the requesting user matches name of the user
+    // document. The wildcard expression {userId} makes the userId variable
+    // available in rules.
+  	match /users/{userId} {
+    	allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+    	allow create: if request.auth != null;
     }
     match /auction-live/{items} {
       allow get, list: if true;

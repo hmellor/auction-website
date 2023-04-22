@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-export const auctions = [
+const auctions = [
     {
         primaryImage: "",
         title: "",
@@ -118,3 +118,5 @@ export const auctions = [
         startingPrice: 7,
         endTime: 0
     }]
+
+window.auctions = auctions

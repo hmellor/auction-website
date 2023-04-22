@@ -13,7 +13,7 @@ html * {
   border: none;
 }
 
-#info-modal-img {
+.modal-body > img {
   width: 100%;
 }
 
