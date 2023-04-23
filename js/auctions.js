@@ -1,49 +1,9 @@
 // Imports
-import { auth, db } from "./firebase.js";
+import { generateRandomAuctionData } from "./demo.js";
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
 // For a real auction, set this to false
-let demoAuction = true;
-
-// Random auction information
-function generateRandomAuctionData() {
-  let cards = document.querySelectorAll(".card")
-
-  // Random cat names
-  $.getJSON(
-    "https://random-data-api.com/api/name/random_name",
-    { size: auctions.length },
-    (data) => {
-      data.forEach((elem, i) => {
-        cards[i].querySelector(".title").innerText = elem.name
-        cards[i].dataset.title = elem.name
-      });
-    }
-  );
-  // Random lorem ipsum cat descriptions
-  $.getJSON(
-    "https://random-data-api.com/api/lorem_ipsum/random_lorem_ipsum",
-    { size: auctions.length },
-    (data) => {
-      data.forEach((elem, i) => {
-        cards[i].querySelector(".card-subtitle").innerText = elem.short_sentence
-        cards[i].dataset.subtitle = elem.short_sentence;
-        cards[i].dataset.detail = elem.very_long_sentence;
-      });
-    }
-  );
-  // Random cat images and end times
-  for (let i = 0; i < auctions.length; i++) {
-    cards[i].querySelector("img").src = "https://cataas.com/cat/cute?random=" + i;
-    cards[i].dataset.primaryImage = "https://cataas.com/cat/cute?random=" + i;
-    cards[i].dataset.secondaryImage = "https://cataas.com/cat/cute?random=" + i;
-
-    let now = new Date();
-    let endTime = new Date().setHours(8 + i, 0, 0, 0)
-    if (endTime - now < 0) { endTime = new Date(endTime).setDate(now.getDate() + 1) }
-    auctions[i].endTime = endTime
-  }
-}
+export const isDemo = true;
 
 // Convert time to string for HTML clocks
 function timeBetween(start, end) {
