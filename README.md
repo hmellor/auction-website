@@ -1,8 +1,8 @@
 # Auction Website
 
-This repo contains the code to host an auction website for free using GitHub Pages and Firebase anonymous authentication & databases.
+In this repo you will find the code and instructions to host an auction website for free using GitHub Pages and Firebase anonymous authentication & databases.
 
-This is a project I worked on for a charity as a pet project and so the functionality is very bespoke and not perfect (as much as I tried to make it). If you would like to contribute to making this codebase more general I welcome you to create pull requests with your improvements.
+This is a project I originally worked on for a charity event and I've been improving it in my spare time ever since. Contributions and suggestions are welcome!
 
 ## Table of contents
 - [Table of contents](#table-of-contents)
