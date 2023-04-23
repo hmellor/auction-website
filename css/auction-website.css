@@ -16,3 +16,7 @@ html * {
 .modal-body > img {
   width: 100%;
 }
+
+.card > .table {
+  margin-bottom: 0;
+}
