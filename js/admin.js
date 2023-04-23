@@ -73,36 +73,35 @@ export function setupTable() {
 
 function resetItem(i) {
     const docRef = doc(db, "auction", "items")
-    const itemId = `item${i.toString().padStart(5, "0")}`
-    // Find all bids for item i
-    let initialState = {}
-    let amount = auctions[i].startingPrice
-    let title = document.getElementById(`auction-${i}`).children[1].innerText
-    let endTime = auctions[i].endTime
-    getDoc(docRef).then((doc) => {
-      console.debug("resetItem() read from auction/items")
-      let keys = Object.keys(doc.data()).sort()
-      keys.filter((key) => key.includes(itemId)).forEach((key, idx) => {
-        // Mark all except bid00000 to be deleted
-        initialState[key] = idx ? deleteField() : { amount: amount, title: title, endTime: endTime }
-      })
-    }).then(() => {
-      updateDoc(docRef, initialState)
-      console.debug("resetItem() write to from auction/items")
+    getItems().then(items => {
+        let initialState = {}
+        getDoc(docRef).then((doc) => {
+            console.debug("resetItem() read from auction/items")
+            // Find all bids for item i
+            let item = items[i]
+            let keys = Object.keys(doc.data()).sort()
+            keys.filter(key => key.includes(`item${i.toString().padStart(5, "0")}`)).forEach((key, idx) => {
+                // Mark all except bid00000 to be deleted
+                initialState[key] = idx ? deleteField() : { amount: item.startPrice, title: item.title, endTime: item.endTime }
+            })
+        }).then(() => {
+            updateDoc(docRef, initialState)
+            console.debug("resetItem() write to from auction/items")
+        })
     })
-  }
-  
-  function resetAll() {
-    let initialState = {}
-    for (let i = 0; i < auctions.length; i++) {
-      let field = `item${i.toString().padStart(5, "0")}_bid00000`
-      let amount = auctions[i].startingPrice
-      let title = document.getElementById(`auction-${i}`).dataset.title
-      initialState[field] = { amount: amount, title: title }
-    }
-    setDoc(doc(db, "auction", "items"), initialState)
-    console.debug("resetAll() write to auction/items")
-  }
-  
-  window.resetItem = resetItem
-  window.resetAll = resetAll
+}
+
+function resetAll() {
+    getItems().then(items => {
+        let initialState = {}
+        items.forEach(item => {
+            let field = `item${item.id.toString().padStart(5, "0")}_bid00000`
+            initialState[field] = { amount: item.startPrice, title: item.title, endTime: item.endTime }
+        })
+        setDoc(doc(db, "auction", "items"), initialState)
+        console.debug("resetAll() write to auction/items")
+    })
+}
+
+window.resetItem = resetItem
+window.resetAll = resetAll
