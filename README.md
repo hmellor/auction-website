@@ -115,7 +115,7 @@ To create an admin account:
 - You have now created your admin account.
 
 To initialise the auctions:
-- With the device you used to create your admin account, head to your website.
+- With the device you used to create your admin account, head to your website and navigate to the admin page.
 - Open the developer console (F12) and enter `resetAll()` into the console.
 - This will revert the entire auction to the initial state specified in `js/firebase.js` (as long as you are admin), be careful with this one!
 - You can also reset individual items using the `resetItem(i)` function.
