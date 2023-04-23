@@ -230,11 +230,6 @@ function resetItem(i) {
   const itemId = `item${i.toString().padStart(5, "0")}`
   // Find all bids for item i
   let initialState = {}
-<<<<<<< Updated upstream
-=======
-  let amount = auctions[i].startingPrice
-  let title = document.getElementById(`auction-${i}`).dataset.title
->>>>>>> Stashed changes
   getDoc(docRef).then((doc) => {
     console.debug("resetItem() read from auction/items")
     let keys = Object.keys(doc.data()).sort()
@@ -252,13 +247,7 @@ function resetAll() {
   let initialState = {}
   for (let i = 0; i < auctions.length; i++) {
     let field = `item${i.toString().padStart(5, "0")}_bid00000`
-<<<<<<< Updated upstream
     initialState[field] = { amount: auctions[i].startingPrice }
-=======
-    let amount = auctions[i].startingPrice
-    let title = document.getElementById(`auction-${i}`).dataset.title
-    initialState[field] = { amount: amount, title: title }
->>>>>>> Stashed changes
   }
   setDoc(doc(db, "auction", "items"), initialState)
   console.debug("resetAll() write to auction/items")
