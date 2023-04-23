@@ -20,20 +20,20 @@ This is a project I worked on for a charity as a pet project and so the function
 - Device based login requiring only a username to be provided (no need to store sensitive information).
 - Popups for more detailed descriptions and additional imagery.
 - Realtime bidding using event listeners (no need to refresh page).
+- Built with Bootstrap so everything is reactive.
+- Has a separate page for administrators to monitor the auction.
 
-![](./readme/homepage_desktop.png) ![](./readme/loginpage.png)
 
-![](./readme/infopage.png) ![](./readme/bidpage.png)
-
-It looks great on mobile too!
-
-![](./readme/homepage_mobile.png) 
+| ![](./readme/homepage_desktop.png) | ![](./readme/loginpage.png) |
+|:---:|:---:|
+| ![](./readme/infopage.png) | ![](./readme/bidpage.png) |
+| <img src="./readme/homepage_mobile.png" width="50%"> | ![](./readme/adminpage.png) |
 
 ## Setup
 Here we will cover how to add your own information to the auctions themselves, then how to most a local server to see your changes and finally how to connect it all to Firebase to enable user login and bidding.
 
 ### Adding auction information
-First, set `demoAuction=False` in `js/auctions.js` (this will keep the cats at bay).
+First, set `isDemo=False` in `js/auctions.js` (this will keep the cats at bay).
 
 Then, populate the `Object` at the bottom of `js/firebase.js` with the information for of the items you'll be putting up for auction. The fields are:
 - `primaryImage` (`String`): path or URL to the primary image
@@ -41,7 +41,7 @@ Then, populate the `Object` at the bottom of `js/firebase.js` with the informati
 - `subtitle` (`String`): auction subtitle
 - `detail` (`String`): auction detail text
 - `secondaryImage` (`String`): path or URL to the secondary image
-- `startingPrice` (`Number`): auction price,
+- `startPrice` (`Number`): auction price,
 - `endTime` (`Number`): auction end time relative to epoch **in milliseconds**. (See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.)
 
 ### Firebase setup
@@ -105,18 +105,19 @@ Setting up the database is a little more involved so here are the steps you must
   - Admins can access all auction and user data.
 
 ### Creating an admin account and initialising your auctions
-The final step in setting up your auction is to create an admin account and use it to initialise your auctions.
+The final step in setting up your auction is to create an admin account and use it to initialise and monitor your auction.
 
 To create an admin account:
-- Host your website either locally or on GitHub Pages and log in to your website.
+- Host your website either locally or on GitHub Pages and log in to the website.
 - Then go to your Firestore console and find the document for the user you just created.
-- There should be a field in the document called `admin` which has the value `"false"`. You must now create a password (or hash) that enables admin access and set the `admin` field to this value.
-- Go to your Firestore rules and replace `"insert long random secret string"` with your admin password.
-- You have now created your admin account.
+- There should be a boolean field in the document called `admin` which has the value `"false"`. Change its type to string and enter your desired admin password*. The longer and more complicated the password the better, consider using something like an MD5 hash. You'll never actually have to enter it anywhere, it's just used when validating your Firestore requests.
+- Go to your Firestore rules and replace `insert long random secret string` with the password you **just created**.
+
+> *_**Please** don't reuse one of your existing passwords! While the Firestore rules should prevent bad actors from reading your user's data, don't risk it. I can't be responsible for leaked passwords due to a misconfigured project_
 
 To initialise the auctions:
-- With the device you used to create your admin account, head to your website.
+- With the device you used to create your admin account, head to your website and navigate to the admin page by clicking the `Admin` button in the top right.
 - Open the developer console (F12) and enter `resetAll()` into the console.
 - This will revert the entire auction to the initial state specified in `js/firebase.js` (as long as you are admin), be careful with this one!
 - You can also reset individual items using the `resetItem(i)` function.
-- Your auction is now ready.
+- You can also use this `Admin` page to monitor the status of your auction.

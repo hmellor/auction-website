@@ -17,6 +17,6 @@ html * {
   width: 100%;
 }
 
-.table {
+.card > .table {
   margin-bottom: 0;
 }
