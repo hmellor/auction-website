@@ -48,6 +48,7 @@ export function dataListener() {
             if (bids[bidCount].uid) {
                 getDoc(doc(db, "users", bids[bidCount].uid)).then((user) => {
                     row.children[4].innerText = user.get("name")
+                    console.debug("dataListener() read from users")
                 })
             }
         }
