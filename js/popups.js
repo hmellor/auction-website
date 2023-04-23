@@ -70,9 +70,9 @@ if (bidModal) {
   // Populate bidModal with the correct information before it is visible
   bidModal.addEventListener("show.bs.modal", (event) => {
     const button = event.relatedTarget
-    const card = button.closest(".card") || document.getElementById(bidModal.dataset.bsActiveAuction)
-    bidModalTitle.innerText = card.dataset.bsTitle
-    bidModal.dataset.bsActiveAuction = card.id
+    const card = button.closest(".card") || document.getElementById(bidModal.dataset.activeAuction)
+    bidModalTitle.innerText = card.dataset.title
+    bidModal.dataset.activeAuction = card.id
 
   })
 
@@ -102,7 +102,7 @@ if (bidModal) {
   function placeBid() {
     let nowTime = new Date().getTime();
     bidModalSubmit.setAttribute('disabled', '') // disable the button while we check
-    let i = bidModal.dataset.bsActiveAuction.match("[0-9]+");
+    let i = bidModal.dataset.activeAuction.match("[0-9]+");
     let feedback = bidModal.querySelector(".invalid-feedback")
     // Cleanse input
     let amountElement = bidModal.querySelector("input")
@@ -168,11 +168,11 @@ if (infoModal) {
     // Update variable content elements
     const button = event.relatedTarget
     const card = button.closest(".card")
-    infoModalTitle.innerText = card.dataset.bsTitle
-    infoModalDetail.innerText = card.dataset.bsDetail
-    infoModalSecondaryImage.src = card.dataset.bsSecondaryImage
+    infoModalTitle.innerText = card.dataset.title
+    infoModalDetail.innerText = card.dataset.detail
+    infoModalSecondaryImage.src = card.dataset.secondaryImage
     // Add the auction ID to the bidModal, in case the user clicks "Submit bid" in infoModal
-    bidModal.dataset.bsActiveAuction = card.id
+    bidModal.dataset.activeAuction = card.id
   })
 
   // Clear the auction specific information from bidModal when hiding infoModal
