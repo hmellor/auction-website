@@ -66,12 +66,21 @@ const bidModalTitle = bidModal.querySelector("strong")
 const bidModalInput = bidModal.querySelector("input")
 const bidModalSubmit = bidModal.querySelector(".btn-primary")
 
+<<<<<<< Updated upstream
 // Populate bidModal with the correct information before it is visible
 bidModal.addEventListener("show.bs.modal", (event) => {
   const button = event.relatedTarget
   const card = button.closest(".card") || document.getElementById(bidModal.dataset.bsActiveAuction)
   bidModalTitle.innerText = card.dataset.bsTitle
   bidModal.dataset.bsActiveAuction = card.id
+=======
+  // Populate bidModal with the correct information before it is visible
+  bidModal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget
+    const card = button.closest(".card") || document.getElementById(bidModal.dataset.activeAuction)
+    bidModalTitle.innerText = card.dataset.title
+    bidModal.dataset.activeAuction = card.id
+>>>>>>> Stashed changes
 
 })
 
@@ -97,6 +106,7 @@ bidModal.addEventListener("hidden.bs.modal", () => {
 bidModalSubmit.addEventListener("click", () => { placeBid() })
 bidModalInput.addEventListener("keydown", (event) => { if (event.key == 'Enter') { placeBid() } })
 
+<<<<<<< Updated upstream
 // Function that handles bidding logic
 function placeBid() {
   let nowTime = new Date().getTime();
@@ -112,6 +122,29 @@ function placeBid() {
     setTimeout(() => {
       bidModalObject.hide();
       amountElement.classList.remove("is-invalid");
+=======
+  // Function that handles bidding logic
+  function placeBid() {
+    let nowTime = new Date().getTime();
+    bidModalSubmit.setAttribute('disabled', '') // disable the button while we check
+    let i = bidModal.dataset.activeAuction.match("[0-9]+");
+    let feedback = bidModal.querySelector(".invalid-feedback")
+    // Cleanse input
+    let amountElement = bidModal.querySelector("input")
+    let amount = Number(amountElement.value)
+    if (auctions[i].endTime - nowTime < 0) {
+      feedback.innerText = "The auction is already over!"
+      amountElement.classList.add("is-invalid")
+      setTimeout(() => {
+        bidModalObject.hide();
+        amountElement.classList.remove("is-invalid");
+        bidModalSubmit.removeAttribute('disabled', '');
+      }, 1000);
+    } else if (amount == 0) {
+      // amount was empty
+      feedback.innerText = "Please specify an amount!"
+      amountElement.classList.add("is-invalid")
+>>>>>>> Stashed changes
       bidModalSubmit.removeAttribute('disabled', '');
     }, 1000);
   } else if (amount == 0) {
@@ -157,6 +190,24 @@ function placeBid() {
 
 // -- Info modal --
 const infoModal = document.getElementById('info-modal')
+<<<<<<< Updated upstream
+=======
+if (infoModal) {
+  // Populate infoModal with the correct information before it is visible
+  infoModal.addEventListener("show.bs.modal", (event) => {
+    const infoModalTitle = infoModal.querySelector('.modal-title')
+    const infoModalDetail = infoModal.querySelector('.modal-body > p')
+    const infoModalSecondaryImage = infoModal.querySelector('.modal-body > img')
+    // Update variable content elements
+    const button = event.relatedTarget
+    const card = button.closest(".card")
+    infoModalTitle.innerText = card.dataset.title
+    infoModalDetail.innerText = card.dataset.detail
+    infoModalSecondaryImage.src = card.dataset.secondaryImage
+    // Add the auction ID to the bidModal, in case the user clicks "Submit bid" in infoModal
+    bidModal.dataset.activeAuction = card.id
+  })
+>>>>>>> Stashed changes
 
 // Populate infoModal with the correct information before it is visible
 infoModal.addEventListener("show.bs.modal", (event) => {

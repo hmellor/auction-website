@@ -16,7 +16,7 @@ function generateRandomAuctionData() {
     (data) => {
       data.forEach((elem, i) => {
         cards[i].querySelector(".title").innerText = elem.name
-        cards[i].dataset.bsTitle = elem.name
+        cards[i].dataset.title = elem.name
       });
     }
   );
@@ -27,16 +27,16 @@ function generateRandomAuctionData() {
     (data) => {
       data.forEach((elem, i) => {
         cards[i].querySelector(".card-subtitle").innerText = elem.short_sentence
-        cards[i].dataset.bsSubtitle = elem.short_sentence;
-        cards[i].dataset.bsDetail = elem.very_long_sentence;
+        cards[i].dataset.subtitle = elem.short_sentence;
+        cards[i].dataset.detail = elem.very_long_sentence;
       });
     }
   );
   // Random cat images and end times
   for (let i = 0; i < auctions.length; i++) {
     cards[i].querySelector("img").src = "https://cataas.com/cat/cute?random=" + i;
-    cards[i].dataset.bsPrimaryImage = "https://cataas.com/cat/cute?random=" + i;
-    cards[i].dataset.bsSecondaryImage = "https://cataas.com/cat/cute?random=" + i;
+    cards[i].dataset.primaryImage = "https://cataas.com/cat/cute?random=" + i;
+    cards[i].dataset.secondaryImage = "https://cataas.com/cat/cute?random=" + i;
 
     let now = new Date();
     let endTime = new Date().setHours(8 + i, 0, 0, 0)
@@ -100,10 +100,10 @@ function generateAuctionCard(auction) {
 
   let card = document.createElement("div");
   card.classList.add("card");
-  card.dataset.bsTitle = auction.title
-  card.dataset.bsDetail = auction.detail
-  card.dataset.bsPrimaryImage = auction.primaryImage
-  card.dataset.bsSecondaryImage = auction.secondaryImage
+  card.dataset.title = auction.title
+  card.dataset.detail = auction.detail
+  card.dataset.primaryImage = auction.primaryImage
+  card.dataset.secondaryImage = auction.secondaryImage
   card.id = "auction-" + auction.idx
   col.appendChild(card);
 
@@ -230,6 +230,11 @@ function resetItem(i) {
   const itemId = `item${i.toString().padStart(5, "0")}`
   // Find all bids for item i
   let initialState = {}
+<<<<<<< Updated upstream
+=======
+  let amount = auctions[i].startingPrice
+  let title = document.getElementById(`auction-${i}`).dataset.title
+>>>>>>> Stashed changes
   getDoc(docRef).then((doc) => {
     console.debug("resetItem() read from auction/items")
     let keys = Object.keys(doc.data()).sort()
@@ -247,7 +252,13 @@ function resetAll() {
   let initialState = {}
   for (let i = 0; i < auctions.length; i++) {
     let field = `item${i.toString().padStart(5, "0")}_bid00000`
+<<<<<<< Updated upstream
     initialState[field] = { amount: auctions[i].startingPrice }
+=======
+    let amount = auctions[i].startingPrice
+    let title = document.getElementById(`auction-${i}`).dataset.title
+    initialState[field] = { amount: amount, title: title }
+>>>>>>> Stashed changes
   }
   setDoc(doc(db, "auction", "items"), initialState)
   console.debug("resetAll() write to auction/items")
