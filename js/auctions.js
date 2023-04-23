@@ -230,12 +230,15 @@ function resetItem(i) {
   const itemId = `item${i.toString().padStart(5, "0")}`
   // Find all bids for item i
   let initialState = {}
+  let amount = auctions[i].startingPrice
+  let title = document.getElementById(`auction-${i}`).dataset.bsTitle
   getDoc(docRef).then((doc) => {
     console.debug("resetItem() read from auction/items")
     let keys = Object.keys(doc.data()).sort()
     keys.filter((key) => key.includes(itemId)).forEach((key, idx) => {
       // Mark all except bid00000 to be deleted
-      initialState[key] = idx ? deleteField() : { amount: auctions[i].startingPrice }
+
+      initialState[key] = idx ? deleteField() : { amount: amount, title: title }
     })
   }).then(() => {
     updateDoc(docRef, initialState)
@@ -247,7 +250,9 @@ function resetAll() {
   let initialState = {}
   for (let i = 0; i < auctions.length; i++) {
     let field = `item${i.toString().padStart(5, "0")}_bid00000`
-    initialState[field] = { amount: auctions[i].startingPrice }
+    let amount = auctions[i].startingPrice
+    let title = document.getElementById(`auction-${i}`).dataset.bsTitle
+    initialState[field] = { amount: amount, title: title }
   }
   setDoc(doc(db, "auction", "items"), initialState)
   console.debug("resetAll() write to auction/items")
