@@ -224,3 +224,12 @@ export function dataListener() {
     }
   })
 }
+
+
+export async function getItems() {
+  return argsort(isDemo ? await generateRandomAuctionData(auctions) : auctions, "endTime")
+} 
+
+export function setupItems() {
+  getItems().then(auctions => populateAuctionGrid(auctions)).then(() => { setClocks(); dataListener() })
+}

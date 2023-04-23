@@ -22,7 +22,7 @@ function createRow(item) {
     return row
 }
 
-export function dataListener() {
+function dataListener() {
     // Listen for updates in active auctions
     onSnapshot(doc(db, "auction", "items"), (items) => {
         console.debug("dataListener() read from auction/items")
@@ -56,6 +56,19 @@ export function dataListener() {
             }
         }
     })
+}
+
+function setClocks() {
+    let now = new Date().getTime()
+    document.querySelectorAll("tbody > tr").forEach(row => {
+        row.children[5].innerText = timeBetween(now, row.children[5].dataset.endTime);
+    })
+    setTimeout(setClocks, 1000);
+}
+
+export function setupTable() {
+    dataListener();
+    setClocks();
 }
 
 function resetItem(i) {

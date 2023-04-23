@@ -127,12 +127,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <!-- Create anonymous account -->
   <script type="module">
-    import { populateAuctionGrid, setClocks, dataListener } from "./js/auctions.js";
     import { autoSignIn } from "./js/popups.js";
-    populateAuctionGrid();
-    setClocks();
-    dataListener()
+    import { setupItems } from "./js/auctions.js";
     autoSignIn();
+    setupItems();
   </script>
 </body>
 
