@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebase
 import { signInAnonymously, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js";
 
 // -- Sign up modal and logic --
+const adminButton = document.getElementById('admin-button')
 const authButton = document.getElementById('auth-button')
 const signUpModal = document.getElementById('login-modal')
 const signUpModalObject = new bootstrap.Modal(signUpModal)
@@ -17,6 +18,10 @@ export function autoSignIn() {
       // If user has an anonymous account and a displayName, treat them as signed in
       authButton.innerText = "Sign out"
       document.getElementById('username-display').innerText = "Hi " + user.displayName
+      // If user is admin, display the admin button
+      getDoc(doc(db, "users", user.uid)).then((user) => {
+        if ("admin" in user.data()) { adminButton.style.display = "inline-block" }
+    })
     } else {
       // Automatically create an anonymous account if user doesn't have one
       signInAnonymously(auth)
