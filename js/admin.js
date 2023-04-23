@@ -1,6 +1,6 @@
 // Imports
 import { db } from "./firebase.js";
-import { doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, updateDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
 let table = document.querySelector("tbody");
 
@@ -50,7 +50,46 @@ export function dataListener() {
                     row.children[4].innerText = user.get("name")
                     console.debug("dataListener() read from users")
                 })
+            } else {
+                // Remove winner name if auction was reset
+                row.children[4].innerText = ""
             }
         }
     })
 }
+
+function resetItem(i) {
+    const docRef = doc(db, "auction", "items")
+    const itemId = `item${i.toString().padStart(5, "0")}`
+    // Find all bids for item i
+    let initialState = {}
+    let amount = auctions[i].startingPrice
+    let title = document.getElementById(`auction-${i}`).children[1].innerText
+    let endTime = auctions[i].endTime
+    getDoc(docRef).then((doc) => {
+      console.debug("resetItem() read from auction/items")
+      let keys = Object.keys(doc.data()).sort()
+      keys.filter((key) => key.includes(itemId)).forEach((key, idx) => {
+        // Mark all except bid00000 to be deleted
+        initialState[key] = idx ? deleteField() : { amount: amount, title: title, endTime: endTime }
+      })
+    }).then(() => {
+      updateDoc(docRef, initialState)
+      console.debug("resetItem() write to from auction/items")
+    })
+  }
+  
+  function resetAll() {
+    let initialState = {}
+    for (let i = 0; i < auctions.length; i++) {
+      let field = `item${i.toString().padStart(5, "0")}_bid00000`
+      let amount = auctions[i].startingPrice
+      let title = document.getElementById(`auction-${i}`).dataset.title
+      initialState[field] = { amount: amount, title: title }
+    }
+    setDoc(doc(db, "auction", "items"), initialState)
+    console.debug("resetAll() write to auction/items")
+  }
+  
+  window.resetItem = resetItem
+  window.resetAll = resetAll
