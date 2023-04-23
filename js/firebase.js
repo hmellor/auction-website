@@ -20,14 +20,14 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-const auctions = [
+export const auctions = [
     {
         primaryImage: "",
         title: "",
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 55,
+        startPrice: 55,
         endTime: 0
     }, {
         primaryImage: "",
@@ -35,7 +35,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 60,
+        startPrice: 60,
         endTime: 0
     }, {
         primaryImage: "",
@@ -43,7 +43,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 20,
+        startPrice: 20,
         endTime: 0
     }, {
         rimaryImage: "",
@@ -51,7 +51,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 0,
+        startPrice: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -59,7 +59,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 4,
+        startPrice: 4,
         endTime: 0
     }, {
         primaryImage: "",
@@ -67,7 +67,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 0,
+        startPrice: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -75,7 +75,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 99,
+        startPrice: 99,
         endTime: 0
     }, {
         primaryImage: "",
@@ -83,7 +83,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 0,
+        startPrice: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -91,7 +91,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 12,
+        startPrice: 12,
         endTime: 0
     }, {
         primaryImage: "",
@@ -99,7 +99,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 6,
+        startPrice: 6,
         endTime: 0
     }, {
         primaryImage: "",
@@ -107,7 +107,7 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 3,
+        startPrice: 3,
         endTime: 0
     }, {
         primaryImage: "",
@@ -115,8 +115,6 @@ const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startingPrice: 7,
+        startPrice: 7,
         endTime: 0
     }]
-
-window.auctions = auctions

@@ -1,4 +1,5 @@
 // Imports
+import { db, auctions } from "./firebase.js";
 import { generateRandomAuctionData } from "./demo.js";
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
@@ -6,7 +7,7 @@ import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/fireb
 export const isDemo = true;
 
 // Convert time to string for HTML clocks
-function timeBetween(start, end) {
+export function timeBetween(start, end) {
   let _string = ""
   let secsRemaining = (end - start) / 1000;
   let d = parseInt(secsRemaining / 86400);
@@ -21,16 +22,16 @@ function timeBetween(start, end) {
 }
 
 // Set time on HTML clocks
-export function setClocks() {
+function setClocks() {
   let now = new Date();
   let nowTime = now.getTime();
-  for (let i = 0; i < auctions.length; i++) {
-    let timer = document.getElementById("time-left-" + i)
+  document.querySelectorAll(".card").forEach(card => {
+    let countDown = card.querySelector(".time-left")
     // remove finished auction after 5 minutes
-    if (auctions[i].endTime - nowTime < -300) {
+    if (card.dataset.endTime - nowTime < -300) {
       document.getElementById("auction-" + i).parentElement.style.display = "none"
-      if (demoAuction) {
-        auctions[i].endTime = new Date(auctions[i].endTime).setDate(now.getDate() + 1) // add 1 day
+      if (isDemo) {
+        card.dataset.endTime = new Date(card.dataset.endTime).setDate(now.getDate() + 1) // add 1 day
         document.getElementById("auction-" + i).parentElement.remove()
         resetItem(i);
         auctionGrid = document.getElementById("auction-grid");
@@ -38,19 +39,20 @@ export function setClocks() {
         auctionGrid.appendChild(auctionCard);
       }
       // disable bidding on finished auctions
-    } else if (auctions[i].endTime - nowTime < 0) {
-      timer.innerHTML = "Auction Complete";
+    } else if (card.dataset.endTime - nowTime < 0) {
+      countDown.innerHTML = "Auction Complete";
       document.getElementById("bid-button-" + i).setAttribute('disabled', '')
     } else {
-      timer.innerHTML = timeBetween(nowTime, auctions[i].endTime);
+      countDown.innerHTML = timeBetween(nowTime, card.dataset.endTime);
     }
-  }
+  })
   setTimeout(setClocks, 1000);
 }
 
 function argsort(array, key) {
-  const arrayObject = array.map((value, idx) => { return { value, idx }; });
-  return arrayObject.sort((a, b) => (a.value[key] - b.value[key]));
+  // Insert the index from the unsorted array as the item ID
+  array.forEach((value, idx) => { array[idx].id = idx });
+  return array.sort((a, b) => (a[key] - b[key]));
 }
 
 function generateAuctionCard(auction) {
@@ -64,12 +66,14 @@ function generateAuctionCard(auction) {
   card.dataset.detail = auction.detail
   card.dataset.primaryImage = auction.primaryImage
   card.dataset.secondaryImage = auction.secondaryImage
-  card.id = "auction-" + auction.idx
+  card.dataset.endTime = auction.endTime
+  card.dataset.StartPrice = auction.StartPrice
+  card.dataset.id = auction.id
   col.appendChild(card);
 
   let image = document.createElement("img");
   image.classList.add("card-img-top");
-  image.src = auction.value.primaryImage;
+  image.src = auction.primaryImage;
   card.appendChild(image);
 
   let body = document.createElement("div");
@@ -78,12 +82,12 @@ function generateAuctionCard(auction) {
 
   let title = document.createElement("h5");
   title.classList.add("title");
-  title.innerText = auction.value.title;
+  title.innerText = auction.title;
   body.appendChild(title);
 
   let subtitle = document.createElement("p");
   subtitle.classList.add("card-subtitle");
-  subtitle.innerText = auction.value.subtitle;
+  subtitle.innerText = auction.subtitle;
   body.appendChild(subtitle);
 
   // Auction status
@@ -104,7 +108,7 @@ function generateAuctionCard(auction) {
 
   let bid = document.createElement("td");
   bid.innerHTML = "£-.-- [- bids]"
-  bid.id = "current-bid-" + auction.idx
+  bid.classList.add("current-bid")
   bidRow.appendChild(bid);
 
   let timeRow = document.createElement("tr");
@@ -116,7 +120,7 @@ function generateAuctionCard(auction) {
   timeRow.appendChild(timeTitle);
 
   let time = document.createElement("td");
-  time.id = "time-left-" + auction.idx
+  time.classList.add("time-left")
   timeRow.appendChild(time);
 
   // Auction actions
@@ -144,21 +148,19 @@ function generateAuctionCard(auction) {
 }
 
 // Generatively populate the website with auctions
-export function populateAuctionGrid() {
+function populateAuctionGrid(auctions) {
   let auctionGrid = document.getElementById("auction-grid");
-  let auctionsSorted = argsort(auctions, "endTime");
-  auctionsSorted.forEach((auction) => {
+  auctions.forEach((auction) => {
     let auctionCard = generateAuctionCard(auction);
     auctionGrid.appendChild(auctionCard);
   });
-  if (demoAuction) { generateRandomAuctionData() };
 }
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-export function dataListener() {
+function dataListener() {
   // Listen for updates in active auctions
   onSnapshot(doc(db, "auction", "items"), (doc) => {
     console.debug("dataListener() read from auction/items")
@@ -171,16 +173,13 @@ export function dataListener() {
     }
     // Use structured Object to populate the "Current bid" for each item
     for (const [item, bids] of Object.entries(data)) {
-      let cb = document.getElementById(`current-bid-${item}`)
+      let card = document.querySelector(`.card[data-id="${item}"]`)
+      let currentBid = card.querySelector(".current-bid")
       // Extract bid data
       let bidCount = Object.keys(bids).length - 1
       let currPound = bids[bidCount].toFixed(2)
-      // Check if the user is winning
-      if (auth.currentUser) {
-        let userWinning = bids["bid" + bidCount + "-user"] == auth.currentUser.uid
-      }
       // Add bid data to HTML
-      cb.innerHTML = "£" + numberWithCommas(currPound) + " [" + bidCount + " bid" + (bidCount != 1 ? "s" : "") + "]"
+      currentBid.innerHTML = `£${numberWithCommas(currPound)} [${bidCount} bid${bidCount != 1 ? "s" : ""}]`
     }
   })
 }

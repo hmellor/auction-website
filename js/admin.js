@@ -1,5 +1,6 @@
 // Imports
 import { db } from "./firebase.js";
+import { timeBetween, getItems } from "./auctions.js";
 import { doc, setDoc, getDoc, updateDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
 let table = document.querySelector("tbody");
@@ -54,6 +55,7 @@ function dataListener() {
                 // Remove winner name if auction was reset
                 row.children[4].innerText = ""
             }
+            row.children[5].dataset.endTime = bids[0].endTime
         }
     })
 }

@@ -77,7 +77,7 @@ if (bidModal) {
     const button = event.relatedTarget
     const card = button.closest(".card") || document.getElementById(bidModal.dataset.activeAuction)
     bidModalTitle.innerText = card.dataset.title
-    bidModal.dataset.activeAuction = card.id
+    bidModal.dataset.activeAuction = card.dataset.id
 
   })
 
@@ -96,7 +96,7 @@ if (bidModal) {
   bidModal.addEventListener("hidden.bs.modal", () => {
     bidModalInput.value = ""
     bidModalInput.classList.remove("is-invalid")
-    bidModal.removeAttribute("data-bs-active-auction")
+    bidModal.removeAttribute("data-active-auction")
   })
 
   // A bid can be triggered either by clicking the submit button or by pressing enter
@@ -107,12 +107,13 @@ if (bidModal) {
   function placeBid() {
     let nowTime = new Date().getTime();
     bidModalSubmit.setAttribute('disabled', '') // disable the button while we check
-    let i = bidModal.dataset.activeAuction.match("[0-9]+");
+    let i = Number(bidModal.dataset.activeAuction.match("[0-9]+"));
+    let endTime = document.querySelector(`.card[data-id="${i}"]`).dataset.endTime
     let feedback = bidModal.querySelector(".invalid-feedback")
     // Cleanse input
     let amountElement = bidModal.querySelector("input")
     let amount = Number(amountElement.value)
-    if (auctions[i].endTime - nowTime < 0) {
+    if (endTime - nowTime < 0) {
       feedback.innerText = "The auction is already over!"
       amountElement.classList.add("is-invalid")
       setTimeout(() => {
@@ -177,7 +178,7 @@ if (infoModal) {
     infoModalDetail.innerText = card.dataset.detail
     infoModalSecondaryImage.src = card.dataset.secondaryImage
     // Add the auction ID to the bidModal, in case the user clicks "Submit bid" in infoModal
-    bidModal.dataset.activeAuction = card.id
+    bidModal.dataset.activeAuction = card.dataset.id
   })
 
   // Clear the auction specific information from bidModal when hiding infoModal
