@@ -183,6 +183,6 @@ if (infoModal) {
 
   // Clear the auction specific information from bidModal when hiding infoModal
   bidModal.addEventListener("hide.bs.modal", () => {
-    bidModal.removeAttribute("data-bs-active-auction")
+    bidModal.removeAttribute("data-active-auction")
   })
 }
