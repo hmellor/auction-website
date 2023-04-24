@@ -6,47 +6,33 @@ import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.20.0/fireb
 // For a real auction, set this to false
 export const isDemo = true;
 
-// Convert time to string for HTML clocks
-export function timeBetween(start, end) {
-  let _string = ""
-  let secsRemaining = (end - start) / 1000;
-  let d = parseInt(secsRemaining / 86400);
-  let h = parseInt(secsRemaining % 86400 / 3600);
-  let m = parseInt(secsRemaining % 3600 / 60);
-  let s = parseInt(secsRemaining % 60);
-  if (d) { _string = _string + d + "d " }
-  if (h) { _string = _string + h + "h " }
-  if (m) { _string = _string + m + "m " }
-  if (s) { _string = _string + s + "s " }
-  return _string.trim()
+// Helper function
+const divmod = (x, y) => [Math.floor(x / y), x % y]
+
+// Convert time (ms) to string for HTML clocks
+export function timeToString(time) {
+  let [d, remainingHours] = divmod(time / 1000, 86400)
+  let [h, remainingMinutes] = divmod(remainingHours, 3600)
+  let [m, s] = divmod(remainingMinutes, 60)
+  // Make seconds more exciting when item has <10 minutes left
+  s = m > 9 || h || d ? Math.round(s) : s.toFixed(1)
+  // Construct string
+  return `${d ? d + "d " : ""}${h ? h + "h " : ""}${m ? m + "m " : ""}${s ? s + "s" : ""}`.trim()
 }
 
 // Set time on HTML clocks
 function setClocks() {
-  let now = new Date();
-  let nowTime = now.getTime();
+  let now = new Date().getTime();
   document.querySelectorAll(".card").forEach(card => {
-    let countDown = card.querySelector(".time-left")
-    // remove finished auction after 5 minutes
-    if (card.dataset.endTime - nowTime < -300) {
-      document.getElementById("auction-" + i).parentElement.style.display = "none"
-      if (isDemo) {
-        card.dataset.endTime = new Date(card.dataset.endTime).setDate(now.getDate() + 1) // add 1 day
-        document.getElementById("auction-" + i).parentElement.remove()
-        resetItem(i);
-        auctionGrid = document.getElementById("auction-grid");
-        auctionCard = generateAuctionCard(i);
-        auctionGrid.appendChild(auctionCard);
-      }
-      // disable bidding on finished auctions
-    } else if (card.dataset.endTime - nowTime < 0) {
-      countDown.innerHTML = "Auction Complete";
-      document.getElementById("bid-button-" + i).setAttribute('disabled', '')
+    let timeLeft = card.querySelector(".time-left")
+    // disable bidding on finished auctions
+    if (card.dataset.endTime < now) {
+      timeLeft.innerHTML = "Auction Complete";
+      card.querySelector(".btn-primary").setAttribute('disabled', '')
     } else {
-      countDown.innerHTML = timeBetween(nowTime, card.dataset.endTime);
+      timeLeft.innerHTML = timeToString(card.dataset.endTime - now);
     }
   })
-  setTimeout(setClocks, 1000);
 }
 
 function argsort(array, key) {
@@ -62,18 +48,15 @@ function generateAuctionCard(auction) {
 
   let card = document.createElement("div");
   card.classList.add("card");
+  // Add data for the info modal to read
   card.dataset.title = auction.title
   card.dataset.detail = auction.detail
-  card.dataset.primaryImage = auction.primaryImage
   card.dataset.secondaryImage = auction.secondaryImage
-  card.dataset.endTime = auction.endTime
-  card.dataset.StartPrice = auction.StartPrice
   card.dataset.id = auction.id
   col.appendChild(card);
 
   let image = document.createElement("img");
   image.classList.add("card-img-top");
-  image.src = auction.primaryImage;
   card.appendChild(image);
 
   let body = document.createElement("div");
@@ -82,15 +65,13 @@ function generateAuctionCard(auction) {
 
   let title = document.createElement("h5");
   title.classList.add("title");
-  title.innerText = auction.title;
   body.appendChild(title);
 
   let subtitle = document.createElement("p");
   subtitle.classList.add("card-subtitle");
-  subtitle.innerText = auction.subtitle;
   body.appendChild(subtitle);
 
-  // Auction status
+  // Item status
   let statusTable = document.createElement("table");
   statusTable.classList.add("table");
   card.appendChild(statusTable);
@@ -160,7 +141,31 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function dataListener() {
+function dataListenerCallback(data) {
+  // Use structured Object to populate the "Current bid" for each item
+  for (const [id, bids] of Object.entries(data)) {
+    let card = document.querySelector(`.card[data-id="${id}"]`)
+    // Update current bid
+    let currentBid = card.querySelector(".current-bid")
+    // Extract bid data
+    let bidCount = Object.keys(bids).length - 1
+    let currPound = bids[bidCount].amount.toFixed(2)
+    // Add bid data to HTML
+    currentBid.innerHTML = `£${numberWithCommas(currPound)} [${bidCount} bid${bidCount != 1 ? "s" : ""}]`
+    // Update everything else
+    let item = bids[0]
+    card.dataset.endTime = item.endTime
+    card.querySelector(".card-img-top").src = item.primaryImage
+    card.querySelector(".title").innerText = item.title
+    card.querySelector(".card-subtitle").innerText = item.subtitle
+    card.dataset.title = item.title
+    card.dataset.detail = item.detail
+    card.dataset.secondaryImage = item.secondaryImage
+    card.dataset.id = item.id
+  }
+}
+
+export function dataListener(callback) {
   // Listen for updates in active auctions
   onSnapshot(doc(db, "auction", "items"), (doc) => {
     console.debug("dataListener() read from auction/items")
@@ -169,26 +174,17 @@ function dataListener() {
     for (const [key, details] of Object.entries(doc.data())) {
       let [item, bid] = key.split("_").map(i => Number(i.match(/\d+/)))
       data[item] = data[item] || {}
-      data[item][bid] = details.amount
+      data[item][bid] = details
     }
-    // Use structured Object to populate the "Current bid" for each item
-    for (const [item, bids] of Object.entries(data)) {
-      let card = document.querySelector(`.card[data-id="${item}"]`)
-      let currentBid = card.querySelector(".current-bid")
-      // Extract bid data
-      let bidCount = Object.keys(bids).length - 1
-      let currPound = bids[bidCount].toFixed(2)
-      // Add bid data to HTML
-      currentBid.innerHTML = `£${numberWithCommas(currPound)} [${bidCount} bid${bidCount != 1 ? "s" : ""}]`
-    }
+    callback(data)
   })
 }
 
 
 export async function getItems() {
   return argsort(isDemo ? await generateRandomAuctionData(auctions) : auctions, "endTime")
-} 
+}
 
 export function setupItems() {
-  getItems().then(auctions => populateAuctionGrid(auctions)).then(() => { setClocks(); dataListener() })
+  getItems().then(auctions => populateAuctionGrid(auctions)).then(() => { setInterval(setClocks, 100); dataListener(dataListenerCallback) })
 }

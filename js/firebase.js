@@ -27,7 +27,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 55,
+        amount: 55,
         endTime: 0
     }, {
         primaryImage: "",
@@ -35,7 +35,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 60,
+        amount: 60,
         endTime: 0
     }, {
         primaryImage: "",
@@ -43,7 +43,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 20,
+        amount: 20,
         endTime: 0
     }, {
         rimaryImage: "",
@@ -51,7 +51,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 0,
+        amount: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -59,7 +59,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 4,
+        amount: 4,
         endTime: 0
     }, {
         primaryImage: "",
@@ -67,7 +67,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 0,
+        amount: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -75,7 +75,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 99,
+        amount: 99,
         endTime: 0
     }, {
         primaryImage: "",
@@ -83,7 +83,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 0,
+        amount: 0,
         endTime: 0
     }, {
         primaryImage: "",
@@ -91,7 +91,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 12,
+        amount: 12,
         endTime: 0
     }, {
         primaryImage: "",
@@ -99,7 +99,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 6,
+        amount: 6,
         endTime: 0
     }, {
         primaryImage: "",
@@ -107,7 +107,7 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 3,
+        amount: 3,
         endTime: 0
     }, {
         primaryImage: "",
@@ -115,6 +115,6 @@ export const auctions = [
         subtitle: "",
         detail: "",
         secondaryImage: "",
-        startPrice: 7,
+        amount: 7,
         endTime: 0
     }]

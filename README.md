@@ -37,12 +37,12 @@ First, set `isDemo=False` in `js/auctions.js` (this will keep the cats at bay).
 
 Then, populate the `Object` at the bottom of `js/firebase.js` with the information for of the items you'll be putting up for auction. The fields are:
 - `primaryImage` (`String`): path or URL to the primary image
-- `title` (`String`): auction title
-- `subtitle` (`String`): auction subtitle
-- `detail` (`String`): auction detail text
+- `title` (`String`): item title
+- `subtitle` (`String`): item subtitle
+- `detail` (`String`): item detail text
 - `secondaryImage` (`String`): path or URL to the secondary image
-- `startPrice` (`Number`): auction price,
-- `endTime` (`Number`): auction end time relative to epoch **in milliseconds**. (See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.)
+- `amount` (`Number`): item starting price,
+- `endTime` (`Number`): item end time relative to epoch **in milliseconds**. (See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.)
 
 ### Firebase setup
 Here we will cover how to set up your Firebase project and then how to enable the Firebase authentication and database respectively.
