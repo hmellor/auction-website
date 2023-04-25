@@ -67,7 +67,7 @@ function setClocks() {
 
 export function setupTable() {
   dataListener(dataListenerCallback);
-  setInterval(setClocks, 1000);
+  setInterval(setClocks, 100);
 }
 
 function resetItem(i) {
