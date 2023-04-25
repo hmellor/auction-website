@@ -52,7 +52,7 @@ function dataListenerCallback(data) {
       // Remove winner name if auction was reset
       row.children[4].innerText = "";
     }
-    row.children[5].dataset.endTime = bids[0].endTime;
+    row.children[5].dataset.endTime = bids[0].endTime.toMillis();
   }
 }
 
@@ -63,12 +63,11 @@ function setClocks() {
       row.children[5].dataset.endTime - now
     );
   });
-  setTimeout(setClocks, 1000);
 }
 
 export function setupTable() {
   dataListener(dataListenerCallback);
-  setClocks();
+  setInterval(setClocks, 1000);
 }
 
 function resetItem(i) {
