@@ -1,13 +1,11 @@
-// Imports
-import { db, auctions } from "./firebase.js";
-import { generateRandomAuctionData } from "./demo.js";
+import { db } from "./firebase.js";
+import { getItems } from "./items.js";
 import {
   doc,
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-// For a real auction, set this to false
-export const isDemo = true;
+let grid = document.getElementById("auction-grid");
 
 // Helper function
 const divmod = (x, y) => [Math.floor(x / y), x % y];
@@ -40,15 +38,7 @@ function setClocks() {
   });
 }
 
-function argsort(array, key) {
-  // Insert the index from the unsorted array as the item ID
-  array.forEach((value, idx) => {
-    array[idx].id = idx;
-  });
-  return array.sort((a, b) => a[key] - b[key]);
-}
-
-function generateAuctionCard(auction) {
+function generateItemCard(auction) {
   // create auction card
   let col = document.createElement("div");
   col.classList.add("col");
@@ -135,15 +125,6 @@ function generateAuctionCard(auction) {
   return col;
 }
 
-// Generatively populate the website with auctions
-function populateAuctionGrid(auctions) {
-  let auctionGrid = document.getElementById("auction-grid");
-  auctions.forEach((auction) => {
-    let auctionCard = generateAuctionCard(auction);
-    auctionGrid.appendChild(auctionCard);
-  });
-}
-
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -151,7 +132,13 @@ function numberWithCommas(x) {
 function dataListenerCallback(data) {
   // Use structured Object to populate the "Current bid" for each item
   for (const [id, bids] of Object.entries(data)) {
+    let item = bids[0];
     let card = document.querySelector(`.card[data-id="${id}"]`);
+    if (card == null) {
+      let col = generateItemCard(item);
+      grid.appendChild(col);
+      card = col.firstChild;
+    }
     // Update current bid
     let currentBid = card.querySelector(".current-bid");
     // Extract bid data
@@ -162,8 +149,7 @@ function dataListenerCallback(data) {
       bidCount != 1 ? "s" : ""
     }]`;
     // Update everything else
-    let item = bids[0];
-    card.dataset.endTime = item.endTime;
+    card.dataset.endTime = item.endTime.toMillis();
     card.querySelector(".card-img-top").src = item.primaryImage;
     card.querySelector(".title").innerText = item.title;
     card.querySelector(".card-subtitle").innerText = item.subtitle;
@@ -189,18 +175,7 @@ export function dataListener(callback) {
   });
 }
 
-export async function getItems() {
-  return argsort(
-    isDemo ? await generateRandomAuctionData(auctions) : auctions,
-    "endTime"
-  );
-}
-
 export function setupItems() {
-  getItems()
-    .then((auctions) => populateAuctionGrid(auctions))
-    .then(() => {
-      setInterval(setClocks, 100);
-      dataListener(dataListenerCallback);
-    });
+  dataListener(dataListenerCallback);
+  setInterval(setClocks, 100);
 }

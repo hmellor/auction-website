@@ -1,13 +1,13 @@
-// Imports
 import { db } from "./firebase.js";
-import { timeToString, getItems, dataListener } from "./auctions.js";
+import { getItems } from "./items.js";
+import { timeToString, dataListener } from "./auctions.js";
 import {
   doc,
   setDoc,
   getDoc,
   updateDoc,
   deleteField,
-  onSnapshot,
+  Timestamp,
 } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
 let table = document.querySelector("tbody");
@@ -52,7 +52,7 @@ function dataListenerCallback(data) {
       // Remove winner name if auction was reset
       row.children[4].innerText = "";
     }
-    row.children[5].dataset.endTime = bids[0].endTime;
+    row.children[5].dataset.endTime = bids[0].endTime.toMillis();
   }
 }
 
@@ -63,12 +63,11 @@ function setClocks() {
       row.children[5].dataset.endTime - now
     );
   });
-  setTimeout(setClocks, 1000);
 }
 
 export function setupTable() {
   dataListener(dataListenerCallback);
-  setClocks();
+  setInterval(setClocks, 100);
 }
 
 function resetItem(i) {
@@ -80,6 +79,7 @@ function resetItem(i) {
         console.debug("resetItem() read from auction/items");
         // Find all bids for item i
         let item = items[i];
+        item.endTime = Timestamp.fromDate(item.endTime);
         let keys = Object.keys(doc.data()).sort();
         keys
           .filter((key) => key.includes(`item${i.toString().padStart(5, "0")}`))
@@ -99,8 +99,9 @@ function resetAll() {
   getItems().then((items) => {
     let initialState = {};
     items.forEach((item) => {
-      let field = `item${item.id.toString().padStart(5, "0")}_bid00000`;
-      initialState[field] = item;
+      let key = `item${item.id.toString().padStart(5, "0")}_bid00000`;
+      item.endTime = Timestamp.fromDate(item.endTime);
+      initialState[key] = item;
     });
     setDoc(doc(db, "auction", "items"), initialState);
     console.debug("resetAll() write to auction/items");

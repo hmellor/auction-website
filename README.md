@@ -33,16 +33,16 @@ This is a project I originally worked on for a charity event and I've been impro
 Here we will cover how to add your own information to the auctions themselves, then how to most a local server to see your changes and finally how to connect it all to Firebase to enable user login and bidding.
 
 ### Adding auction information
-First, set `isDemo=False` in `js/auctions.js` (this will keep the cats at bay).
+First, set `isDemo=False` in `js/items.js` (this will keep the cats at bay).
 
-Then, populate the `Object` at the bottom of `js/firebase.js` with the information for of the items you'll be putting up for auction. The fields are:
+Then, populate the `Object` in `js/items.js` with the information for of the items you'll be putting up for auction. The fields are:
 - `primaryImage` (`String`): path or URL to the primary image
 - `title` (`String`): item title
 - `subtitle` (`String`): item subtitle
 - `detail` (`String`): item detail text
 - `secondaryImage` (`String`): path or URL to the secondary image
 - `amount` (`Number`): item starting price,
-- `endTime` (`Number`): item end time relative to epoch **in milliseconds**. (See [JavaScript's `Date` class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) for more information.)
+- `endTime` (`string`): item end time in [ISO 8601 format](https://tc39.es/ecma262/#sec-date-time-string-format) (`YYYY-MM-DDTHH:mm:ss.sssZ`)
 
 ### Firebase setup
 Here we will cover how to set up your Firebase project and then how to enable the Firebase authentication and database respectively.
