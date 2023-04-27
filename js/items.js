@@ -10,7 +10,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 55,
-    endTime: "2023-04-25T10:00:00+00:00",
+    endTime: "2023-04-25T00:00:00+00:00",
   },
   {
     primaryImage: "",
@@ -19,7 +19,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 60,
-    endTime: "2023-04-25T11:00:00+00:00",
+    endTime: "2023-04-25T00:05:00+00:00",
   },
   {
     primaryImage: "",
@@ -28,7 +28,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 20,
-    endTime: "2023-04-25T12:00:00+00:00",
+    endTime: "2023-04-25T00:10:00+00:00",
   },
   {
     rimaryImage: "",
@@ -37,7 +37,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 0,
-    endTime: "2023-04-25T13:00:00+00:00",
+    endTime: "2023-04-25T00:15:00+00:00",
   },
   {
     primaryImage: "",
@@ -46,7 +46,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 4,
-    endTime: "2023-04-25T14:00:00+00:00",
+    endTime: "2023-04-25T00:20:00+00:00",
   },
   {
     primaryImage: "",
@@ -55,7 +55,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 0,
-    endTime: "2023-04-25T15:00:00+00:00",
+    endTime: "2023-04-25T00:25:00+00:00",
   },
   {
     primaryImage: "",
@@ -64,7 +64,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 99,
-    endTime: "2023-04-25T16:00:00+00:00",
+    endTime: "2023-04-25T00:30:00+00:00",
   },
   {
     primaryImage: "",
@@ -73,7 +73,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 0,
-    endTime: "2023-04-25T17:00:00+00:00",
+    endTime: "2023-04-25T00:35:00+00:00",
   },
   {
     primaryImage: "",
@@ -82,7 +82,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 12,
-    endTime: "2023-04-25T18:00:00+00:00",
+    endTime: "2023-04-25T00:40:00+00:00",
   },
   {
     primaryImage: "",
@@ -91,7 +91,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 6,
-    endTime: "2023-04-25T19:00:00+00:00",
+    endTime: "2023-04-25T00:45:00+00:00",
   },
   {
     primaryImage: "",
@@ -100,7 +100,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 3,
-    endTime: "2023-04-25T20:00:00+00:00",
+    endTime: "2023-04-25T00:50:00+00:00",
   },
   {
     primaryImage: "",
@@ -109,7 +109,7 @@ let items = [
     detail: "",
     secondaryImage: "",
     amount: 7,
-    endTime: "2023-04-25T21:00:00+00:00",
+    endTime: "2023-04-25T00:55:00+00:00",
   },
 ];
 
