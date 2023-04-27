@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { getItems } from "./items.js";
+import { isDemo } from "./items.js";
 import {
   doc,
   onSnapshot,
@@ -30,7 +30,7 @@ function setClocks() {
     let timeLeft = card.querySelector(".time-left");
     // disable bidding on finished auctions
     if (card.dataset.endTime < now) {
-      timeLeft.innerHTML = "Auction Complete";
+      timeLeft.innerHTML = "Item Ended";
       card.querySelector(".btn-primary").setAttribute("disabled", "");
     } else {
       timeLeft.innerHTML = timeToString(card.dataset.endTime - now);
@@ -149,7 +149,18 @@ function dataListenerCallback(data) {
       bidCount != 1 ? "s" : ""
     }]`;
     // Update everything else
-    card.dataset.endTime = item.endTime.toMillis();
+    if (isDemo) {
+      // Make sure some items always appear active for the demo
+      let now = new Date();
+      let endTime = item.endTime.toDate();
+      endTime.setHours(now.getHours());
+      endTime.setDate(now.getDate());
+      endTime.setMonth(now.getMonth());
+      endTime.setFullYear(now.getFullYear());
+      card.dataset.endTime = endTime.getTime();
+    } else {
+      card.dataset.endTime = item.endTime.toMillis();
+    }
     card.querySelector(".card-img-top").src = item.primaryImage;
     card.querySelector(".title").innerText = item.title;
     card.querySelector(".card-subtitle").innerText = item.subtitle;

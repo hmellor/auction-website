@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { getItems } from "./items.js";
+import { getItems, isDemo } from "./items.js";
 import { timeToString, dataListener } from "./auctions.js";
 import {
   doc,
@@ -52,16 +52,30 @@ function dataListenerCallback(data) {
       // Remove winner name if auction was reset
       row.children[4].innerText = "";
     }
-    row.children[5].dataset.endTime = bids[0].endTime.toMillis();
+    if (isDemo) {
+      // Make sure some items always appear active for the demo
+      let now = new Date();
+      let endTime = bids[0].endTime.toDate();
+      endTime.setHours(now.getHours());
+      endTime.setDate(now.getDate());
+      endTime.setMonth(now.getMonth());
+      endTime.setFullYear(now.getFullYear());
+      row.children[5].dataset.endTime = endTime.getTime();
+    } else {
+      row.children[5].dataset.endTime = bids[0].endTime.toMillis();
+    }
   }
 }
 
 function setClocks() {
   let now = new Date().getTime();
   document.querySelectorAll("tbody > tr").forEach((row) => {
-    row.children[5].innerText = timeToString(
-      row.children[5].dataset.endTime - now
-    );
+    let timeLeft = row.children[5];
+    if (timeLeft.dataset.endTime < now) {
+      timeLeft.innerHTML = "Item Ended";
+    } else {
+      timeLeft.innerText = timeToString(timeLeft.dataset.endTime - now);
+    }
   });
 }
 
