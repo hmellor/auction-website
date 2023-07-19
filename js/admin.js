@@ -1,11 +1,14 @@
-import { db } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 import { getItems, isDemo } from "./items.js";
 import { timeToString, dataListener } from "./auctions.js";
 import {
   doc,
   setDoc,
   getDoc,
+  getDocs,
   updateDoc,
+  collection,
+  writeBatch,
   deleteField,
   Timestamp,
 } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
@@ -126,5 +129,33 @@ function resetAll() {
   });
 }
 
+async function resetUsers() {
+  const users = await getDocs(collection(db, "users"));
+  let batches = [];
+  users.forEach((user) => {
+    // Add new writeBatch if:
+    //   - there are no batches
+    //   - the current batch is full
+    if (
+      batches.length == 0 ||
+      batches[batches.length - 1]._mutations.length % 500 == 0
+    ) {
+      batches.push(writeBatch(db));
+    }
+    // Add write to batch if not the current user
+    if (user.id != auth.currentUser.uid) {
+      const userRef = doc(db, "users", user.id);
+      batches[batches.length - 1].update(userRef, { admin: "" });
+    } else {
+      console.debug("Not resetting current user");
+    }
+  });
+  // Commit all batches
+  for await (const batch of batches) {
+    await batch.commit();
+  }
+}
+
 window.resetItem = resetItem;
 window.resetAll = resetAll;
+window.resetUsers = resetUsers;

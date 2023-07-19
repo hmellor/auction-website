@@ -119,5 +119,8 @@ To initialise the auctions:
 - With the device you used to create your admin account, head to your website and navigate to the admin page by clicking the `Admin` button in the top right.
 - Open the developer console (F12) and enter `resetAll()` into the console.
 - This will revert the entire auction to the initial state specified in `js/firebase.js` (as long as you are admin), be careful with this one!
-- You can also reset individual items using the `resetItem(i)` function.
-- You can also use this `Admin` page to monitor the status of your auction.
+
+While on this `Admin` page you can also:
+- Monitor the status of your auction.
+- Reset individual items using the `resetItem(i)` function.
+- Reset all user's admin status using `resetUsers()` (excluding the current user).
