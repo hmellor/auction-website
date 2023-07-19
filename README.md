@@ -41,6 +41,7 @@ Then, populate the `Object` in `js/items.js` with the information for of the ite
 - `subtitle` (`String`): item subtitle
 - `detail` (`String`): item detail text
 - `secondaryImage` (`String`): path or URL to the secondary image
+- `currency` (`String`): the currency symbol to use
 - `amount` (`Number`): item starting price,
 - `endTime` (`string`): item end time in [ISO 8601 format](https://tc39.es/ecma262/#sec-date-time-string-format) (`YYYY-MM-DDTHH:mm:ss.sssZ`)
 
