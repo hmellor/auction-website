@@ -167,6 +167,7 @@ if (bidModal) {
         let data = doc.data();
         let itemId = `item${i.toString().padStart(5, "0")}`;
         let bids = Object.keys(data).filter((key) => key.includes(itemId));
+        let item = data[bids[0]];
         let bidId = `bid${bids.length.toString().padStart(5, "0")}`;
         let currentBid = data[bids[bids.length - 1]].amount;
         if (amount >= 1 + currentBid) {
@@ -186,8 +187,9 @@ if (bidModal) {
           }, 1000);
         } else {
           amountElement.classList.add("is-invalid");
-          feedback.innerText =
-            "You must bid at least £" + (currentBid + 1).toFixed(2) + "!";
+          feedback.innerText = `You must bid at least ${item.currency}${(
+            currentBid + 1
+          ).toFixed(2)}!`;
           bidModalSubmit.removeAttribute("disabled", "");
         }
       });

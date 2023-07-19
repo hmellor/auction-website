@@ -85,7 +85,7 @@ function generateItemCard(auction) {
   bidRow.appendChild(bidTitle);
 
   let bid = document.createElement("td");
-  bid.innerHTML = "£-.-- [- bids]";
+  bid.innerHTML = "?-.-- [- bids]";
   bid.classList.add("current-bid");
   bidRow.appendChild(bid);
 
@@ -143,11 +143,12 @@ function dataListenerCallback(data) {
     let currentBid = card.querySelector(".current-bid");
     // Extract bid data
     let bidCount = Object.keys(bids).length - 1;
-    let currPound = bids[bidCount].amount.toFixed(2);
+    let currentAmount = bids[bidCount].amount.toFixed(2);
     // Add bid data to HTML
-    currentBid.innerHTML = `£${numberWithCommas(currPound)} [${bidCount} bid${
-      bidCount != 1 ? "s" : ""
-    }]`;
+    let plural = bidCount != 1 ? "s" : "";
+    currentBid.innerHTML = `${item.currency}${numberWithCommas(
+      currentAmount
+    )} [${bidCount} bid${plural}]`;
     // Update everything else
     if (isDemo) {
       // Make sure some items always appear active for the demo
