@@ -23,13 +23,15 @@ const signUpModalSubmit = signUpModal.querySelector(".btn-primary");
 export function autoSignIn() {
   onAuthStateChanged(auth, (user) => {
     if (user && user.displayName != null) {
+      console.debug(`Signed-in: name=${user.displayName}, uid=${user.uid}`);
       // If user has an anonymous account and a displayName, treat them as signed in
       authButton.innerText = "Sign out";
       document.getElementById("username-display").innerText =
         "Hi " + user.displayName;
       // If user is admin, display the admin button
       getDoc(doc(db, "users", user.uid)).then((user) => {
-        if ("admin" in user.data()) {
+        if (user.data().admin) {
+          console.debug("User is admin");
           adminButton.style.display = "inline-block";
         }
       });
@@ -72,7 +74,7 @@ function signUp() {
   let username = signUpModalInput;
   let user = auth.currentUser;
   updateProfile(user, { displayName: username.value });
-  setDoc(doc(db, "users", user.uid), { name: username.value, admin: false });
+  setDoc(doc(db, "users", user.uid), { name: username.value, admin: "" });
   console.debug("signUp() write to users/${auth.currentUser.uid}");
   authButton.innerText = "Sign out";
   document.getElementById("username-display").innerText =
@@ -170,6 +172,7 @@ if (bidModal) {
         let item = data[bids[0]];
         let bidId = `bid${bids.length.toString().padStart(5, "0")}`;
         let currentBid = data[bids[bids.length - 1]].amount;
+        console.debug(`itemId=${itemId} currentBid=${currentBid}`);
         if (amount >= 1 + currentBid) {
           updateDoc(docRef, {
             [`${itemId}_${bidId}`]: {
