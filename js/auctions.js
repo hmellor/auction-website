@@ -172,18 +172,22 @@ function dataListenerCallback(data) {
   }
 }
 
+export function parseDoc(doc) {
+  // Parse flat document data into structured Object
+  let data = {};
+  for (const [key, details] of Object.entries(doc.data())) {
+    let [item, bid] = key.split("_").map((i) => Number(i.match(/\d+/)));
+    data[item] = data[item] || {};
+    data[item][bid] = details;
+  }
+  return data;
+}
+
 export function dataListener(callback) {
   // Listen for updates in active auctions
   onSnapshot(doc(db, "auction", "items"), (doc) => {
     console.debug("dataListener() read from auction/items");
-    // Parse flat document data into structured Object
-    let data = {};
-    for (const [key, details] of Object.entries(doc.data())) {
-      let [item, bid] = key.split("_").map((i) => Number(i.match(/\d+/)));
-      data[item] = data[item] || {};
-      data[item][bid] = details;
-    }
-    callback(data);
+    callback(parseDoc(doc));
   });
 }
 
