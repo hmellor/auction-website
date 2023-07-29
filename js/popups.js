@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase.js";
+import { parseDoc } from "./auctions.js";
 import {
   doc,
   setDoc,
@@ -132,12 +133,19 @@ if (bidModal) {
     }
   });
 
+  // Function for formatting bid field names
+  function fieldName(item, bid) {
+    const item_padded = item.toString().padStart(5, "0");
+    const bid_padded = bid.toString().padStart(5, "0");
+    return `item${item_padded}_bid${bid_padded}`;
+  }
+
   // Function that handles bidding logic
   function placeBid() {
     let nowTime = new Date().getTime();
     bidModalSubmit.setAttribute("disabled", ""); // disable the button while we check
-    let i = Number(bidModal.dataset.activeAuction.match("[0-9]+"));
-    let endTime = document.querySelector(`.card[data-id="${i}"]`).dataset
+    let itemId = Number(bidModal.dataset.activeAuction.match("[0-9]+"));
+    let endTime = document.querySelector(`.card[data-id="${itemId}"]`).dataset
       .endTime;
     let feedback = bidModal.querySelector(".invalid-feedback");
     // Cleanse input
@@ -166,16 +174,14 @@ if (bidModal) {
       let docRef = doc(db, "auction", "items");
       getDoc(docRef).then(function (doc) {
         console.debug("placeBid() read from auction/items");
-        let data = doc.data();
-        let itemId = `item${i.toString().padStart(5, "0")}`;
-        let bids = Object.keys(data).filter((key) => key.includes(itemId));
-        let item = data[bids[0]];
-        let bidId = `bid${bids.length.toString().padStart(5, "0")}`;
-        let currentBid = data[bids[bids.length - 1]].amount;
+        let bids = parseDoc(doc)[itemId];
+        let item = bids[0];
+        let bidId = Object.keys(bids).length;
+        let currentBid = bids[bidId - 1].amount;
         console.debug(`itemId=${itemId} currentBid=${currentBid}`);
         if (amount >= 1 + currentBid) {
           updateDoc(docRef, {
-            [`${itemId}_${bidId}`]: {
+            [fieldName(itemId, bidId)]: {
               amount: amount,
               uid: auth.currentUser.uid,
             },
