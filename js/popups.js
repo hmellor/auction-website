@@ -20,29 +20,6 @@ const signUpModalObject = new bootstrap.Modal(signUpModal);
 const signUpModalInput = signUpModal.querySelector("input");
 const signUpModalSubmit = signUpModal.querySelector(".btn-primary");
 
-// Function called from index.html which creates anonymous account for user (or signs in if it already exists)
-export function autoSignIn() {
-  onAuthStateChanged(auth, (user) => {
-    if (user && user.displayName != null) {
-      console.debug(`Signed-in: name=${user.displayName}, uid=${user.uid}`);
-      // If user has an anonymous account and a displayName, treat them as signed in
-      authButton.innerText = "Sign out";
-      document.getElementById("username-display").innerText =
-        "Hi " + user.displayName;
-      // If user is admin, display the admin button
-      getDoc(doc(db, "users", user.uid)).then((user) => {
-        if (user.data().admin) {
-          console.debug("User is admin");
-          adminButton.style.display = "inline-block";
-        }
-      });
-    } else {
-      // Automatically create an anonymous account if user doesn't have one
-      signInAnonymously(auth);
-    }
-  });
-}
-
 // Only shows signUpModal if the user is not signed in. Otherwise, it pretends to sign out
 authButton.addEventListener("click", () => {
   if (authButton.innerText == "Sign out") {
@@ -204,29 +181,4 @@ if (bidModal) {
       });
     }
   }
-}
-
-// -- Info modal --
-const infoModal = document.getElementById("info-modal");
-if (infoModal) {
-  // Populate infoModal with the correct information before it is visible
-  infoModal.addEventListener("show.bs.modal", (event) => {
-    const infoModalTitle = infoModal.querySelector(".modal-title");
-    const infoModalDetail = infoModal.querySelector(".modal-body > p");
-    const infoModalSecondaryImage =
-      infoModal.querySelector(".modal-body > img");
-    // Update variable content elements
-    const button = event.relatedTarget;
-    const card = button.closest(".card");
-    infoModalTitle.innerText = card.dataset.title;
-    infoModalDetail.innerText = card.dataset.detail;
-    infoModalSecondaryImage.src = card.dataset.secondaryImage;
-    // Add the auction ID to the bidModal, in case the user clicks "Submit bid" in infoModal
-    bidModal.dataset.activeAuction = card.dataset.id;
-  });
-
-  // Clear the auction specific information from bidModal when hiding infoModal
-  bidModal.addEventListener("hide.bs.modal", () => {
-    bidModal.removeAttribute("data-active-auction");
-  });
 }
