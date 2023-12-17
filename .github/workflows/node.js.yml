@@ -20,8 +20,6 @@ jobs:
       - run: npm install
       - run: npm run build
       - uses: actions/upload-pages-artifact@v2
-        with:
-          path: 'build/'
 
   deploy:
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
