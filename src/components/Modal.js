@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { itemStatus } from "./Item";
-import { formatMoney } from "../utils/formatString";
+import { formatField, formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebaseConfig";
 
 const Modal = ({ isOpen, onClose, title, children }) => {
@@ -71,6 +71,12 @@ const SignUpModal = ({ isOpen, onClose }) => {
     }, 1000);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSignUp();
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -92,6 +98,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
               className={`form-control ${valid}`}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
             <label>Username</label>
           </div>
@@ -114,14 +121,78 @@ const SignUpModal = ({ isOpen, onClose }) => {
 };
 
 const BidModal = ({ isOpen, onClose, item }) => {
+  const minIncrease = 1;
+  const [bid, setBid] = useState();
+  const [valid, setValid] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [minBid, setMinBid] = useState("-.--");
 
   useEffect(() => {
     const status = itemStatus(item);
-    setMinBid(formatMoney(item.currency, status.amount + 1));
+    setMinBid(formatMoney(item.currency, status.amount + minIncrease));
   }, [item]);
 
-  const onSubmitBid = () => {};
+  const delayedClose = () => {
+    setTimeout(() => {
+      onClose();
+      setFeedback("");
+      setValid("");
+    }, 1000);
+  };
+
+  const handleSubmitBid = () => {
+    // Get bid submission time as early as possible
+    let nowTime = new Date().getTime();
+    // Disable bid submission while we submit the current request
+    setIsSubmitting(true);
+    // Ensure item has not already ended
+    if (item.endTime - nowTime < 0) {
+      setFeedback("Sorry, this item has ended!");
+      setValid("is-invalid");
+      delayedClose();
+      return;
+    }
+    // Ensure input is a monetary value
+    if (!/^\d+(\.\d{1,2})?$/.test(bid)) {
+      setFeedback("Please enter a valid monetary amount!");
+      setValid("is-invalid");
+      setIsSubmitting(false);
+      return;
+    }
+    // Get values needed to place bid
+    const amount = parseFloat(bid);
+    const status = itemStatus(item);
+    // Ensure input is large enough
+    if (amount < status.amount + minIncrease) {
+      setFeedback("You did not bid enough!");
+      setValid("is-invalid");
+      setIsSubmitting(false);
+      return;
+    }
+    // Finally, place bid
+    updateDoc(doc(db, "auction", "items"), {
+      [formatField(item.id, status.bids + 1)]: {
+        amount,
+        uid: auth.currentUser.uid,
+      },
+    });
+    console.debug("handleSubmidBid() write to auction/items");
+    setValid("is-valid");
+    delayedClose();
+  };
+
+  const handleChange = (e) => {
+    setBid(e.target.value);
+    setIsSubmitting(false);
+    setValid("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !isSubmitting) {
+      handleSubmitBid();
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={"Place your bid"}>
@@ -138,9 +209,12 @@ const BidModal = ({ isOpen, onClose, item }) => {
               autoFocus
               id="amount-input"
               type="amount"
-              className="form-control"
+              className={`form-control ${valid}`}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
             />
             <label>Enter {minBid} or more</label>
+            <div className="invalid-feedback">{feedback}</div>
           </div>
         </form>
       </div>
@@ -148,7 +222,12 @@ const BidModal = ({ isOpen, onClose, item }) => {
         <button type="button" className="btn btn-secondary" onClick={onClose}>
           Close
         </button>
-        <button type="submit" className="btn btn-primary" onClick={onSubmitBid}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={handleSubmitBid}
+          disabled={isSubmitting}
+        >
           Submit bid
         </button>
       </div>

@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { InfoModal, SignUpModal, BidModal } from "./components/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AutoSignIn } from "./utils/firebaseUtils";
+import { AutoSignIn, unflattenItems } from "./utils/firebaseUtils";
 
 function App() {
   const demo = true;
@@ -40,38 +40,10 @@ function App() {
     setIsBidModalOpen(true);
   };
 
-  const unflattenItems = (doc) => {
-    let items = {};
-    for (const [key, value] of Object.entries(doc.data())) {
-      let [item, bid] = key.split("_").map((i) => Number(i.match(/\d+/)));
-
-      if (!(item in items)) items[item] = { bids: {} };
-
-      if (bid == 0) {
-        const { amount, ...itemData } = value;
-        items[item] = { ...items[item], ...itemData, startingPrice: amount };
-        if (demo) {
-          const now = new Date();
-          items[item].endTime = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            now.getHours(),
-            items[item].endTime.toDate().getMinutes(),
-            items[item].endTime.toDate().getSeconds()
-          );
-        }
-      } else {
-        items[item].bids[bid] = value;
-      }
-    }
-    return Object.values(items);
-  };
-
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "auction", "items"), (doc) => {
       console.debug("Reading from auction/items");
-      setItems(unflattenItems(doc));
+      setItems(unflattenItems(doc, demo));
     });
 
     return () => unsubscribe(); // Clean up the listener on unmount
