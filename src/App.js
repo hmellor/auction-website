@@ -38,7 +38,7 @@ function App() {
         <Navbar admin={admin} />
         <SignUpModal />
         <Routes>
-          <Route path="/" element={<HomePage admin={admin} />} />
+          <Route path="/" Component={HomePage} />
           <Route
             path="/admin"
             element={
