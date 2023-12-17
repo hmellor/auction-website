@@ -20,6 +20,8 @@ jobs:
       - run: npm install
       - run: npm run build
       - uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'build/'
 
   deploy:
     needs: build
