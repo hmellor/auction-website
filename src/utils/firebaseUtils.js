@@ -33,4 +33,32 @@ const AutoSignIn = () => {
   return { user, admin };
 };
 
-export { AutoSignIn };
+const unflattenItems = (doc, demo) => {
+  let items = {};
+  for (const [key, value] of Object.entries(doc.data())) {
+    let [item, bid] = key.split("_").map((i) => Number(i.match(/\d+/)));
+
+    if (!(item in items)) items[item] = { bids: {} };
+
+    if (bid == 0) {
+      const { amount, ...itemData } = value;
+      items[item] = { ...items[item], ...itemData, startingPrice: amount };
+      if (demo) {
+        const now = new Date();
+        items[item].endTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          now.getHours(),
+          items[item].endTime.toDate().getMinutes(),
+          items[item].endTime.toDate().getSeconds()
+        );
+      }
+    } else {
+      items[item].bids[bid] = value;
+    }
+  }
+  return Object.values(items);
+};
+
+export { AutoSignIn, unflattenItems };

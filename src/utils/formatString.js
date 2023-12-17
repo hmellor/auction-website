@@ -28,4 +28,10 @@ const formatTime = (time) => {
   return timeString.trim();
 };
 
-export { formatNumberWithCommas, formatMoney, formatTime };
+const formatField = (item, bid) => {
+  const item_padded = item.toString().padStart(5, "0");
+  const bid_padded = bid.toString().padStart(5, "0");
+  return `item${item_padded}_bid${bid_padded}`;
+};
+
+export { formatNumberWithCommas, formatMoney, formatTime, formatField };
