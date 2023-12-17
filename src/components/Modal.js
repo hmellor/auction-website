@@ -81,7 +81,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Sign up for Marketplace Auction"
+      title="Sign up for Markatplace Auction"
     >
       <div className="modal-body">
         <p>

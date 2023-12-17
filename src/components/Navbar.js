@@ -44,7 +44,7 @@ const Navbar = ({ openSignUpModal, admin }) => {
             height="24"
             className="d-inline-block align-text-top"
           />
-          The Marketplace
+          The Markatplace
         </a>
         <div className="row row-cols-auto">
           <a className="navbar-brand">{user}</a>
