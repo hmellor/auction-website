@@ -33,14 +33,22 @@ const AutoSignIn = () => {
   return { user, admin };
 };
 
+const parseKey = (key) => {
+  const match = key.match(/item(\d+)_bid(\d+)/);
+  return {
+    item: Number(match[1]),
+    bid: Number(match[2]),
+  };
+};
+
 const unflattenItems = (doc, demo) => {
   let items = {};
   for (const [key, value] of Object.entries(doc.data())) {
-    let [item, bid] = key.split("_").map((i) => Number(i.match(/\d+/)));
+    const { item, bid } = parseKey(key);
 
     if (!(item in items)) items[item] = { bids: {} };
 
-    if (bid == 0) {
+    if (bid === 0) {
       const { amount, ...itemData } = value;
       items[item] = { ...items[item], ...itemData, startingPrice: amount };
       if (demo) {
@@ -61,4 +69,4 @@ const unflattenItems = (doc, demo) => {
   return Object.values(items);
 };
 
-export { AutoSignIn, unflattenItems };
+export { AutoSignIn, parseKey, unflattenItems };

@@ -3,7 +3,7 @@ import { InfoModal, BidModal } from "../components/Modal";
 
 function HomePage() {
   return (
-    <div className="container">
+    <div className="container mt-3">
       <Grid />
       <InfoModal />
       <BidModal />

@@ -15,7 +15,7 @@ export const ItemsProvider = ({ demo, children }) => {
     });
 
     return () => unsubscribe(); // Clean up the listener on unmount
-  }, []);
+  }, [demo]);
 
   return (
     <ItemsContext.Provider value={{ items }}>{children}</ItemsContext.Provider>

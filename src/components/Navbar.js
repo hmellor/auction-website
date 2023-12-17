@@ -38,7 +38,7 @@ const Navbar = ({ admin }) => {
   return (
     <nav className="navbar navbar-dark bg-primary">
       <div className="container-fluid">
-        <a className="navbar-brand mb-0 h1 me-auto" href="#">
+        <div className="navbar-brand mb-0 h1 me-auto">
           <img
             src="/logo.png"
             alt="Logo"
@@ -47,9 +47,9 @@ const Navbar = ({ admin }) => {
             className="d-inline-block align-text-top"
           />
           The Markatplace
-        </a>
+        </div>
         <div className="row row-cols-auto">
-          <a className="navbar-brand">{user}</a>
+          <div className="navbar-brand">{user}</div>
           {admin && (
             <button onClick={handleNavigate} className="btn btn-secondary me-2">
               Admin
