@@ -59,6 +59,7 @@ const InfoModal = () => {
           type="button"
           className="btn btn-primary"
           onClick={() => openModal(ModalTypes.BID, activeItem)}
+          disabled={activeItem.endTime - new Date().getTime() < 0}
         >
           Submit bid
         </button>
