@@ -1,4 +1,5 @@
 import React from "react";
+import { FaGithub } from "react-icons/fa";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -15,7 +16,9 @@ const Footer = () => {
             href="https://github.com/HMellor/"
             width="24"
             height="24"
-          ></a>
+          >
+            <FaGithub />
+          </a>
         </li>
       </ul>
     </footer>
