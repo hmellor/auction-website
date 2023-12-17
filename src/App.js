@@ -18,7 +18,7 @@ import Footer from "./components/Footer";
 function App() {
   const demo = true;
 
-  const { user, admin } = AutoSignIn();
+  const { admin } = AutoSignIn();
 
   const Providers = ({ children }) => {
     return (
