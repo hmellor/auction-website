@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { formatTime, formatMoney } from "../utils/formatString";
+import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 
 const itemStatus = (item) => {
   const bids = Object.keys(item.bids ?? {}).length;
@@ -7,7 +8,9 @@ const itemStatus = (item) => {
   return { bids, amount };
 };
 
-const Item = ({ item, openInfoModal, openBidModal }) => {
+const Item = ({ item }) => {
+  const { openModal } = useContext(ModalsContext);
+
   const [bids, setBids] = useState(0);
   const [amount, setAmount] = useState(item.startingPrice);
   const [timeLeft, setTimeLeft] = useState("");
@@ -65,7 +68,7 @@ const Item = ({ item, openInfoModal, openBidModal }) => {
 
           <div className="btn-group">
             <button
-              onClick={openInfoModal}
+              onClick={() => openModal(ModalTypes.INFO, item)}
               type="button"
               className="btn btn-secondary"
             >
@@ -73,7 +76,7 @@ const Item = ({ item, openInfoModal, openBidModal }) => {
             </button>
             <button
               disabled={biddingComplete}
-              onClick={openBidModal}
+              onClick={() => openModal(ModalTypes.BID, item)}
               type="button"
               className="btn btn-primary"
             >
