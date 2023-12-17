@@ -1,6 +1,3 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
 function AdminPage() {
   return (
     <div className="container">
