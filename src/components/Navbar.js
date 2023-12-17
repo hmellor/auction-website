@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import { auth } from "../utils/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 
-const Navbar = ({ openSignUpModal, admin }) => {
+const Navbar = ({ admin }) => {
+  const openModal = useContext(ModalsContext).openModal;
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [buttonText, setButtonText] = useState("Sign up");
@@ -29,7 +31,7 @@ const Navbar = ({ openSignUpModal, admin }) => {
       setUser("");
       setButtonText("Sign up");
     } else {
-      openSignUpModal();
+      openModal(ModalTypes.SIGN_UP);
     }
   };
 

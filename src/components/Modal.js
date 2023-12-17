@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
 import { itemStatus } from "./Item";
 import { formatField, formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebaseConfig";
+import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 
-const Modal = ({ isOpen, onClose, title, children }) => {
-  if (!isOpen) return null;
+const Modal = ({ type, title, children }) => {
+  const { closeModal, currentModal } = useContext(ModalsContext);
+
+  if (type != currentModal) return null;
 
   return ReactDOM.createPortal(
     <div
       className="modal fade show"
       style={{ display: "block" }}
-      onClick={onClose}
+      onClick={closeModal}
     >
       <div
         className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
@@ -25,7 +28,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <button
               type="button"
               className="btn-close"
-              onClick={onClose}
+              onClick={closeModal}
             ></button>
           </div>
           {children}
@@ -36,18 +39,27 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-const InfoModal = ({ isOpen, onClose, onSubmitBid, item }) => {
+const InfoModal = () => {
+  const { openModal, closeModal, activeItem } = useContext(ModalsContext);
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={item.title}>
+    <Modal type={ModalTypes.INFO} title={activeItem.title}>
       <div className="modal-body">
-        <p>{item.detail}</p>
-        <img src={item.secondaryImage} alt={item.title} />
+        <p>{activeItem.detail}</p>
+        <img src={activeItem.secondaryImage} alt={activeItem.title} />
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" onClick={onClose}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={closeModal}
+        >
           Close
         </button>
-        <button type="button" className="btn btn-primary" onClick={onSubmitBid}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => openModal(ModalTypes.BID, activeItem)}
+        >
           Submit bid
         </button>
       </div>
@@ -55,7 +67,8 @@ const InfoModal = ({ isOpen, onClose, onSubmitBid, item }) => {
   );
 };
 
-const SignUpModal = ({ isOpen, onClose }) => {
+const SignUpModal = () => {
+  const { closeModal } = useContext(ModalsContext);
   const [username, setUsername] = useState("");
   const [valid, setValid] = useState("");
 
@@ -66,7 +79,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
     console.debug(`signUp() write to users/${user.uid}`);
     setValid("is-valid");
     setTimeout(() => {
-      onClose();
+      closeModal();
       setValid("");
     }, 1000);
   };
@@ -78,11 +91,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Sign up for Marketplace Auction"
-    >
+    <Modal type={ModalTypes.SIGN_UP} title="Sign up for Marketplace Auction">
       <div className="modal-body">
         <p>
           We use anonymous authentication provided by Google. Your account is
@@ -120,7 +129,8 @@ const SignUpModal = ({ isOpen, onClose }) => {
   );
 };
 
-const BidModal = ({ isOpen, onClose, item }) => {
+const BidModal = () => {
+  const { closeModal, activeItem } = useContext(ModalsContext);
   const minIncrease = 1;
   const [bid, setBid] = useState();
   const [valid, setValid] = useState("");
@@ -129,13 +139,13 @@ const BidModal = ({ isOpen, onClose, item }) => {
   const [minBid, setMinBid] = useState("-.--");
 
   useEffect(() => {
-    const status = itemStatus(item);
-    setMinBid(formatMoney(item.currency, status.amount + minIncrease));
-  }, [item]);
+    const status = itemStatus(activeItem);
+    setMinBid(formatMoney(activeItem.currency, status.amount + minIncrease));
+  }, [activeItem]);
 
   const delayedClose = () => {
     setTimeout(() => {
-      onClose();
+      closeModal();
       setFeedback("");
       setValid("");
     }, 1000);
@@ -147,7 +157,7 @@ const BidModal = ({ isOpen, onClose, item }) => {
     // Disable bid submission while we submit the current request
     setIsSubmitting(true);
     // Ensure item has not already ended
-    if (item.endTime - nowTime < 0) {
+    if (activeItem.endTime - nowTime < 0) {
       setFeedback("Sorry, this item has ended!");
       setValid("is-invalid");
       delayedClose();
@@ -162,7 +172,7 @@ const BidModal = ({ isOpen, onClose, item }) => {
     }
     // Get values needed to place bid
     const amount = parseFloat(bid);
-    const status = itemStatus(item);
+    const status = itemStatus(activeItem);
     // Ensure input is large enough
     if (amount < status.amount + minIncrease) {
       setFeedback("You did not bid enough!");
@@ -172,7 +182,7 @@ const BidModal = ({ isOpen, onClose, item }) => {
     }
     // Finally, place bid
     updateDoc(doc(db, "auction", "items"), {
-      [formatField(item.id, status.bids + 1)]: {
+      [formatField(activeItem.id, status.bids + 1)]: {
         amount,
         uid: auth.currentUser.uid,
       },
@@ -195,10 +205,10 @@ const BidModal = ({ isOpen, onClose, item }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={"Place your bid"}>
+    <Modal type={ModalTypes.BID} title={"Place your bid"}>
       <div className="modal-body">
         <p>
-          You are about to place a bid on <strong>{item.title}</strong>
+          You are about to place a bid on <strong>{activeItem.title}</strong>
         </p>
         <p className="text-muted">
           (This is just a demo, you're not bidding real money)
@@ -219,7 +229,11 @@ const BidModal = ({ isOpen, onClose, item }) => {
         </form>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" onClick={onClose}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={closeModal}
+        >
           Close
         </button>
         <button
