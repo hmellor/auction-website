@@ -4,7 +4,7 @@ import Grid from "../components/Grid";
 import Footer from "../components/Footer";
 import { InfoModal, SignUpModal, BidModal } from "../components/Modal";
 
-function HomePage({ items, admin }) {
+function HomePage({ admin }) {
   // Active item state
   const [activeItem, setActiveItem] = useState({});
   // Modal states
@@ -42,11 +42,7 @@ function HomePage({ items, admin }) {
     <div>
       <Navbar openSignUpModal={openSignUpModal} admin={admin} />
       <div className="container">
-        <Grid
-          items={items}
-          openInfoModal={openInfoModal}
-          openBidModal={openBidModal}
-        />
+        <Grid openInfoModal={openInfoModal} openBidModal={openBidModal} />
         <Footer />
       </div>
 
