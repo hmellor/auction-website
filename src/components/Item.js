@@ -5,7 +5,8 @@ import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 const itemStatus = (item) => {
   const bids = Object.keys(item.bids ?? {}).length;
   const amount = bids ? item.bids[bids].amount : item.startingPrice ?? 0;
-  return { bids, amount };
+  const winner = bids ? item.bids[bids].uid : "";
+  return { bids, amount, winner };
 };
 
 const Item = ({ item }) => {

@@ -10,7 +10,7 @@ import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 const Modal = ({ type, title, children }) => {
   const { closeModal, currentModal } = useContext(ModalsContext);
 
-  if (type != currentModal) return null;
+  if (type !== currentModal) return null;
 
   return ReactDOM.createPortal(
     <div
