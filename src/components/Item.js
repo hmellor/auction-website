@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { formatTime, numberWithCommas } from "../utils/formatString";
+import { formatTime, formatMoney } from "../utils/formatString";
 
 const itemStatus = (item) => {
   const bids = Object.keys(item.bids ?? {}).length;
@@ -16,7 +16,7 @@ const Item = ({ item, openInfoModal, openBidModal }) => {
   useEffect(() => {
     const status = itemStatus(item);
     setBids(status.bids);
-    setAmount(numberWithCommas(status.amount));
+    setAmount(formatMoney(item.currency, status.amount));
   }, [item]);
 
   useEffect(() => {
@@ -53,7 +53,6 @@ const Item = ({ item, openInfoModal, openBidModal }) => {
               <tr>
                 <th scope="row">Current bid:</th>
                 <td className="current-bid">
-                  {item.currency}
                   {amount} [{bids} bids]
                 </td>
               </tr>

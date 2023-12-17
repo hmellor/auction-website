@@ -1,5 +1,9 @@
-const numberWithCommas = (x) => {
+const formatNumberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const formatMoney = (currency, amount) => {
+  return `${currency}${formatNumberWithCommas(amount)}`;
 };
 
 const formatTime = (time) => {
@@ -24,4 +28,4 @@ const formatTime = (time) => {
   return timeString.trim();
 };
 
-export { numberWithCommas, formatTime };
+export { formatNumberWithCommas, formatMoney, formatTime };

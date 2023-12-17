@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { itemStatus } from "./Item";
-import { numberWithCommas } from "../utils/formatString";
+import { formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebaseConfig";
@@ -114,11 +114,11 @@ const SignUpModal = ({ isOpen, onClose }) => {
 };
 
 const BidModal = ({ isOpen, onClose, item }) => {
-  const [amount, setAmount] = useState("-.--");
+  const [minBid, setMinBid] = useState("-.--");
 
   useEffect(() => {
     const status = itemStatus(item);
-    setAmount(numberWithCommas(status.amount + 1));
+    setMinBid(formatMoney(item.currency, status.amount + 1));
   }, [item]);
 
   const onSubmitBid = () => {};
@@ -140,11 +140,7 @@ const BidModal = ({ isOpen, onClose, item }) => {
               type="amount"
               className="form-control"
             />
-            <label>
-              Enter {item.currency}
-              {amount} or more
-            </label>
-            <div className="invalid-feedback"></div>
+            <label>Enter {minBid} or more</label>
           </div>
         </form>
       </div>
