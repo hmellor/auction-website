@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { auth } from "../utils/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
-const Navbar = ({ openSignUpModal }) => {
+const Navbar = ({ openSignUpModal, admin }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [buttonText, setButtonText] = useState("Sign up");
 
@@ -17,6 +19,10 @@ const Navbar = ({ openSignUpModal }) => {
     // Clean up the onAuthStateChanged listener when the component unmounts
     return () => unsubscribe();
   }, [user.displayName]);
+
+  const handleNavigate = () => {
+    navigate("/admin");
+  };
 
   const handleSignInOut = () => {
     if (user) {
@@ -42,15 +48,11 @@ const Navbar = ({ openSignUpModal }) => {
         </a>
         <div className="row row-cols-auto">
           <a className="navbar-brand">{user}</a>
-          <a
-            id="admin-button"
-            className="btn btn-secondary me-2"
-            href="admin.html"
-            role="button"
-            style={{ display: "none" }} // Inline styles are written as objects in JSX
-          >
-            Admin
-          </a>
+          {admin && (
+            <button onClick={handleNavigate} className="btn btn-secondary me-2">
+              Admin
+            </button>
+          )}
           <button onClick={handleSignInOut} className="btn btn-secondary me-2">
             {buttonText}
           </button>
