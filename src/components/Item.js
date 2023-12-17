@@ -46,7 +46,7 @@ const Item = ({ item, openInfoModal, openBidModal }) => {
         />
         <div className="card-body">
           <h5 className="title">{item.title}</h5>
-          <p className="card-subtitle">{item.detail}</p>
+          <p className="card-subtitle">{item.subtitle}</p>
 
           <table className="table">
             <tbody>
