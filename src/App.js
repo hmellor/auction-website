@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AutoSignIn } from "./utils/firebaseUtils";
-import { ItemsProvider } from "./contexts/Item";
+import { ItemsProvider } from "./contexts/ItemsProvider";
 import HomePage from "./pages/Home";
 import AdminPage from "./pages/Admin";
 

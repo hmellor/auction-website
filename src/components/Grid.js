@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Item } from "./Item";
-import { ItemsContext } from "../contexts/Item";
+import { ItemsContext } from "../contexts/ItemsProvider";
 
 const Grid = ({ openInfoModal, openBidModal }) => {
   const { items } = useContext(ItemsContext);
