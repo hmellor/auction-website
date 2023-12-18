@@ -49,6 +49,7 @@ const InfoModal = () => {
       setSecondaryImageSrc(src.default)
     })
   }, [activeItem.secondaryImage])
+
   return (
     <Modal type={ModalTypes.INFO} title={activeItem.title}>
       <div className="modal-body">
