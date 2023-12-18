@@ -20,7 +20,7 @@ jobs:
           node-version: '21'
       - run: npm install
       - run: npm install @rollup/rollup-linux-x64-gnu
-      - run: npm run build --base=/auction-website
+      - run: npm run build
       - uses: actions/upload-pages-artifact@v2
         with:
           path: 'dist/'
