@@ -78,7 +78,7 @@ const unflattenItems = (doc, demo) => {
 };
 
 const editItems = (id = undefined, update = false, reset = false) => {
-  fetch("/items.yml")
+  fetch("/auction-website/items.yml")
     .then((response) => response.text())
     .then((text) => yaml.load(text))
     .then((items) => {

@@ -1,5 +1,6 @@
 {
   "name": "auction-website",
+  "homepage": "https://hmellor.github.io/auction-website",
   "version": "3.0.0",
   "private": true,
   "dependencies": {

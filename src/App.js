@@ -29,7 +29,7 @@ function App() {
   };
 
   function ProtectedRoute({ children, condition }) {
-    return condition ? children : <Navigate to="/" />;
+    return condition ? children : <Navigate to="/auction-website" />;
   }
 
   return (
@@ -38,9 +38,10 @@ function App() {
         <Navbar admin={admin} />
         <SignUpModal />
         <Routes>
-          <Route path="/" Component={HomePage} />
+          <Route path="/auction-website" Component={HomePage} />
           <Route
-            path="/admin"
+            exact
+            path="/auction-website/admin"
             element={
               <ProtectedRoute condition={admin}>
                 <AdminPage />
