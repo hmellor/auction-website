@@ -41,11 +41,19 @@ const Modal = ({ type, title, children }) => {
 
 const InfoModal = () => {
   const { openModal, closeModal, activeItem } = useContext(ModalsContext);
+  const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
+
+  useEffect(() => {
+    if (activeItem.secondaryImage === undefined) return;
+    import(`../assets/${activeItem.secondaryImage}.png`).then((src) => {
+      setSecondaryImageSrc(src.default)
+    })
+  }, [activeItem.secondaryImage])
   return (
     <Modal type={ModalTypes.INFO} title={activeItem.title}>
       <div className="modal-body">
         <p>{activeItem.detail}</p>
-        <img src={activeItem.secondaryImage} alt={activeItem.title} />
+        <img src={secondaryImageSrc} alt={activeItem.title} />
       </div>
       <div className="modal-footer">
         <button

@@ -12,6 +12,7 @@ const itemStatus = (item) => {
 const Item = ({ item }) => {
   const { openModal } = useContext(ModalsContext);
 
+  const [primaryImageSrc, setPrimaryImageSrc] = useState("");
   const [bids, setBids] = useState(0);
   const [amount, setAmount] = useState(item.startingPrice);
   const [timeLeft, setTimeLeft] = useState("");
@@ -40,11 +41,18 @@ const Item = ({ item }) => {
     requestAnimationFrame(updateTimer);
   }, [item.endTime]);
 
+  useEffect(() => {
+    import(`../assets/${item.primaryImage}.png`).then((src) => {
+      setPrimaryImageSrc(src.default)
+    })
+  }, [item.primaryImage])
+
+
   return (
     <div className="col">
       <div className="card">
         <img
-          src={item.primaryImage}
+          src={primaryImageSrc}
           className="card-img-top"
           alt={item.title}
         />
