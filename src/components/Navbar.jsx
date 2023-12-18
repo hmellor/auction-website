@@ -23,7 +23,7 @@ const Navbar = ({ admin }) => {
   }, [user.displayName]);
 
   const handleNavigate = () => {
-    navigate("/admin");
+    navigate(import.meta.env.BASE_URL + "admin");
   };
 
   const handleSignInOut = () => {
@@ -40,7 +40,7 @@ const Navbar = ({ admin }) => {
       <div className="container-fluid">
         <div className="navbar-brand mb-0 h1 me-auto">
           <img
-            src="/logo.png"
+            src={import.meta.env.BASE_URL + "logo.png"}
             alt="Logo"
             width="30"
             height="24"

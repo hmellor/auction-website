@@ -29,7 +29,7 @@ function App() {
   };
 
   function ProtectedRoute({ children, condition }) {
-    return condition ? children : <Navigate to="/" />;
+    return condition ? children : <Navigate to={import.meta.env.BASE_URL} />;
   }
 
   return (
@@ -38,10 +38,10 @@ function App() {
         <Navbar admin={admin} />
         <SignUpModal />
         <Routes>
-          <Route path="/" Component={HomePage} />
+          <Route path={import.meta.env.BASE_URL} Component={HomePage} />
           <Route
             exact
-            path="/admin"
+            path={import.meta.env.BASE_URL + "admin"}
             element={
               <ProtectedRoute condition={admin}>
                 <AdminPage />
