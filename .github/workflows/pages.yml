@@ -14,16 +14,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: '21'
-      - run: npm install
-      - run: npm install @rollup/rollup-linux-x64-gnu
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v2
+          cache: 'npm'
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
+      - name: Build
+        run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: 'dist/'
+          path: './dist'
 
   deploy:
     needs: build
