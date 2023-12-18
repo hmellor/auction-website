@@ -47,7 +47,6 @@ const Item = ({ item }) => {
     })
   }, [item.primaryImage])
 
-
   return (
     <div className="col">
       <div className="card">
