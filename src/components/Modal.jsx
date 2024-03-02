@@ -167,7 +167,7 @@ const BidModal = () => {
     // Disable bid submission while we submit the current request
     setIsSubmitting(true);
     // Ensure item has not already ended
-    if (activeItem.endTime - nowTime < 0) {
+    if (activeItem.endTime.toDate() - nowTime < 0) {
       setFeedback("Sorry, this item has ended!");
       setValid("is-invalid");
       delayedClose();
