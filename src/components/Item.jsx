@@ -27,7 +27,7 @@ const Item = ({ item }) => {
   useEffect(() => {
     const updateTimer = () => {
       const now = Date.now();
-      const remaining = item.endTime - now;
+      const remaining = item.endTime.toDate() - now;
 
       if (remaining > 0) {
         setTimeLeft(formatTime(remaining));
