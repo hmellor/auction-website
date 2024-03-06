@@ -1,7 +1,8 @@
-import React, { useEffect, useState, createContext } from "react";
-import { db } from "../utils/firebaseConfig";
+import { useEffect, useState, createContext } from "react";
+import PropTypes from "prop-types";
+import { db } from "../firebase/config";
 import { onSnapshot, doc, setDoc } from "firebase/firestore";
-import { unflattenItems } from "../utils/firebaseUtils";
+import { unflattenItems } from "../firebase/utils";
 
 export const ItemsContext = createContext();
 
@@ -29,3 +30,8 @@ export const ItemsProvider = ({ demo, children }) => {
     <ItemsContext.Provider value={{ items }}>{children}</ItemsContext.Provider>
   );
 };
+
+ItemsProvider.propTypes = {
+  demo: PropTypes.bool,
+  children: PropTypes.arrayOf(PropTypes.element)
+}

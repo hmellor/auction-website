@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { itemStatus } from "./Item";
+import { itemStatus } from "../functions/itemStatus";
 import { formatField, formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "../utils/firebaseConfig";
+import { auth, db } from "../firebase/config";
 import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 
 const Modal = ({ type, title, children }) => {
@@ -38,6 +39,12 @@ const Modal = ({ type, title, children }) => {
     document.body
   );
 };
+
+Modal.propTypes = {
+  type: PropTypes.string,
+  title: PropTypes.string,
+  children: PropTypes.arrayOf(PropTypes.element)
+}
 
 const InfoModal = () => {
   const { openModal, closeModal, activeItem } = useContext(ModalsContext);
@@ -107,7 +114,7 @@ const SignUpModal = () => {
           We use anonymous authentication provided by Google. Your account is
           attached to your device signature.
         </p>
-        <p>The username just lets us know who's bidding!</p>
+        <p>The username just lets us know who&apos;s bidding!</p>
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="form-floating mb-3">
             <input
@@ -221,7 +228,7 @@ const BidModal = () => {
           You are about to place a bid on <strong>{activeItem.title}</strong>
         </p>
         <p className="text-muted">
-          (This is just a demo, you're not bidding real money)
+          (This is just a demo, you&apos;re not bidding real money)
         </p>
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="form-floating mb-3">

@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
-import { auth } from "../utils/firebaseConfig";
+import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
 
@@ -63,5 +64,9 @@ const Navbar = ({ admin }) => {
     </nav>
   );
 };
+
+Navbar.propTypes = {
+  admin: PropTypes.bool
+}
 
 export default Navbar;

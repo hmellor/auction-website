@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
+import PropTypes from "prop-types";
 
 export const ModalsContext = createContext();
 
@@ -31,3 +32,7 @@ export const ModalsProvider = ({ children }) => {
     </ModalsContext.Provider>
   );
 };
+
+ModalsProvider.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element)
+}
