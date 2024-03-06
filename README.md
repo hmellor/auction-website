@@ -34,24 +34,25 @@ This is a project I originally worked on for a charity event and I've been impro
 Here we will cover how to add your own information to the auctions themselves, finally how to connect it all to Firebase to enable user login and bidding.
 
 ### Environment
-To develop and deploy your own auction, you'll need to install `nodejs`. To do this, follow the instructions [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
+To develop and deploy your own auction, you'll need to install Node.js v21. To do this, follow the instructions [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
 
-Then, insall the required packages as follows:
+Then, install the required packages as follows:
 
 ```shell
 npm install
 ```
 
-You can now host a development server by running:
+You can start the development server by running:
 
 ```shell
-npm start
+npm run dev
 ```
 
-You can run the following to make sure that your auction will deploy properly:
+You can build for production and preview the production build by running:
 
 ```shell
 npm run build
+npm run preview
 ```
 
 Your website will deploy automatically using the [.github\workflows\pages.yml](.github\workflows\pages.yml).
@@ -79,7 +80,7 @@ You can create a project using the following steps:
 - Click `Add project` and name your project.
 - Then you may enable or disable Google Analytics at your discretion.
 - You will then be taken to your project's overview where you will add a web app to your project by clicking `Add app` and selecting the web app icon (the app's name is arbitrary and is only used to identify the app within your project if, for example, you had multiple apps in the same project).
-- Now that you have created an app you should be shown a code snippet containing `firebaseConfig`. Copy everything inside `firebaseConfig` to the `firebaseConfig` variable in `index.html`.
+- Now that you have created an app you should be shown a code snippet containing `firebaseConfig`. Copy everything inside `firebaseConfig` to the `firebaseConfig` variable in `src\firebase\config.jsx`.
 
 > The code snippet containing `firebaseConfig` and the current version can be found in `Project settings` if you need to refer to it later.
 
