@@ -33,5 +33,5 @@ export const ItemsProvider = ({ demo, children }) => {
 
 ItemsProvider.propTypes = {
   demo: PropTypes.bool,
-  children: PropTypes.arrayOf(PropTypes.element)
+  children: PropTypes.object
 }
