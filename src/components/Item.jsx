@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
+import { itemStatus } from "../utils/itemStatus";
 import { formatTime, formatMoney } from "../utils/formatString";
-import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
+import { ModalsContext } from "../contexts/ModalsProvider";
+import { ModalTypes } from "../utils/modalTypes";
 
-const itemStatus = (item) => {
-  const bids = Object.keys(item.bids ?? {}).length;
-  const amount = bids ? item.bids[bids].amount : item.startingPrice ?? 0;
-  const winner = bids ? item.bids[bids].uid : "";
-  return { bids, amount, winner };
-};
-
-const Item = ({ item }) => {
+export const Item = ({ item }) => {
   const { openModal } = useContext(ModalsContext);
 
   const [primaryImageSrc, setPrimaryImageSrc] = useState("");
@@ -97,4 +93,13 @@ const Item = ({ item }) => {
   );
 };
 
-export { Item, itemStatus };
+Item.propTypes = {
+  item: PropTypes.shape({
+    startingPrice: PropTypes.number.isRequired,
+    currency: PropTypes.string.isRequired,
+    endTime: PropTypes.object.isRequired,
+    primaryImage: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    subtitle: PropTypes.string.isRequired,
+  })
+}

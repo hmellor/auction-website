@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: GitHub Pages
 
 on:
   push:
@@ -24,7 +24,6 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install @rollup/rollup-linux-x64-gnu
       - name: Build
         run: npm run build
       - name: Setup Pages
@@ -35,6 +34,7 @@ jobs:
           path: './dist'
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:

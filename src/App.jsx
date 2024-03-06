@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -6,7 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AutoSignIn } from "./utils/firebaseUtils";
+import { AutoSignIn } from "./firebase/AutoSignIn";
 import { ItemsProvider } from "./contexts/ItemsProvider";
 import { ModalsProvider } from "./contexts/ModalsProvider";
 import Navbar from "./components/Navbar";
@@ -53,6 +54,11 @@ function App() {
       <Footer />
     </Providers>
   );
+}
+
+App.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element),
+  condition: PropTypes.bool
 }
 
 export default App;

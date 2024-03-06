@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { formatTime, formatMoney } from "../utils/formatString";
-import { itemStatus } from "./Item";
+import { itemStatus } from "../utils/itemStatus";
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "../utils/firebaseConfig";
-import { editItems } from "../utils/firebaseUtils";
+import { db } from "../firebase/config";
+import { editItems } from "../firebase/utils";
 
-const Row = ({ item }) => {
+export const Row = ({ item }) => {
   const [amount, setAmount] = useState(item.startingPrice);
   const [bids, setBids] = useState(0);
   const [winner, setWinner] = useState("");
@@ -72,4 +73,12 @@ const Row = ({ item }) => {
   );
 };
 
-export default Row;
+Row.propTypes = {
+  item: PropTypes.shape({
+    startingPrice: PropTypes.number.isRequired,
+    currency: PropTypes.string.isRequired,
+    endTime: PropTypes.object.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+  })
+}

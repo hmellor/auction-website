@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
   getDoc,
   updateDoc,
@@ -7,49 +5,19 @@ import {
   Timestamp,
   deleteField,
 } from "firebase/firestore";
-import { auth, db } from "./firebaseConfig";
+import { db } from "./config";
 import yaml from "js-yaml";
-import { formatField } from "./formatString";
-
-const AutoSignIn = () => {
-  const [user, setUser] = useState(null);
-  const [admin, setAdmin] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.displayName) {
-        console.debug(`Signed-in: name=${user.displayName}, uid=${user.uid}`);
-        setUser(user);
-
-        // Check if user is admin
-        const userDocRef = doc(db, "users", user.uid);
-        getDoc(userDocRef).then((docSnap) => {
-          if (docSnap.exists() && docSnap.data().admin) {
-            console.debug("User is admin");
-            setAdmin(true);
-          }
-        });
-      } else {
-        signInAnonymously(auth);
-      }
-    });
-
-    // Clean up the onAuthStateChanged listener when the component unmounts
-    return () => unsubscribe();
-  }, []);
-
-  return { user, admin };
-};
+import { formatField } from "../utils/formatString";
 
 const parseField = (key) => {
-  const match = key.match(/item(\d+)_bid(\d+)/);
-  return {
-    item: Number(match[1]),
-    bid: Number(match[2]),
+    const match = key.match(/item(\d+)_bid(\d+)/);
+    return {
+      item: Number(match[1]),
+      bid: Number(match[2]),
+    };
   };
-};
-
-const unflattenItems = (doc, demo) => {
+  
+export const unflattenItems = (doc, demo) => {
   let items = {};
   for (const [key, value] of Object.entries(doc.data())) {
     const { item, bid } = parseField(key);
@@ -76,14 +44,14 @@ const unflattenItems = (doc, demo) => {
   }
   return Object.values(items);
 };
-
-const editItems = (id = undefined, update = false, reset = false) => {
+  
+export const editItems = (id = undefined, update = false, reset = false) => {
   fetch(import.meta.env.BASE_URL + "items.yml")
     .then((response) => response.text())
     .then((text) => yaml.load(text))
     .then((items) => {
       // If ID was provided, place that item in an array by itself
-      if (id) items = [items.find((item) => item.id === id)];
+      if (id !== undefined) items = [items.find((item) => item.id === id)];
 
       const docRef = doc(db, "auction", "items");
       getDoc(docRef)
@@ -114,5 +82,4 @@ const editItems = (id = undefined, update = false, reset = false) => {
         });
     });
 };
-
-export { AutoSignIn, parseField, unflattenItems, editItems };
+  

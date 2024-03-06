@@ -1,13 +1,8 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
+import PropTypes from "prop-types";
+import { ModalTypes } from "../utils/modalTypes";
 
 export const ModalsContext = createContext();
-
-export const ModalTypes = {
-  INFO: "info",
-  SIGN_UP: "signUp",
-  BID: "bid",
-  NONE: null,
-};
 
 export const ModalsProvider = ({ children }) => {
   const [activeItem, setActiveItem] = useState({});
@@ -31,3 +26,7 @@ export const ModalsProvider = ({ children }) => {
     </ModalsContext.Provider>
   );
 };
+
+ModalsProvider.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element)
+}
