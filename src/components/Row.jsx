@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { formatTime, formatMoney } from "../utils/formatString";
-import { itemStatus } from "../functions/itemStatus";
+import { itemStatus } from "../utils/itemStatus";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { editItems } from "../firebase/utils";

@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { itemStatus } from "../functions/itemStatus";
+import { itemStatus } from "../utils/itemStatus";
 import { formatField, formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
-import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
+import { ModalsContext } from "../contexts/ModalsProvider";
+import { ModalTypes } from "../utils/modalTypes";
 
 const Modal = ({ type, title, children }) => {
   const { closeModal, currentModal } = useContext(ModalsContext);

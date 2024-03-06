@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { itemStatus } from "../functions/itemStatus";
+import { itemStatus } from "../utils/itemStatus";
 import { formatTime, formatMoney } from "../utils/formatString";
-import { ModalsContext, ModalTypes } from "../contexts/ModalsProvider";
+import { ModalsContext } from "../contexts/ModalsProvider";
+import { ModalTypes } from "../utils/modalTypes";
 
 export const Item = ({ item }) => {
   const { openModal } = useContext(ModalsContext);
