@@ -25,8 +25,9 @@ export const unflattenItems = (doc, demo) => {
     if (!(item in items)) items[item] = { bids: {} };
 
     if (bid === 0) {
-      const { amount, ...itemData } = value;
-      items[item] = { ...items[item], ...itemData, startingPrice: amount };
+      const { amount, endTime, ...itemData } = value;
+      // Spread operator on `items[item]` in case bid 0 wasn't the first to be read
+      items[item] = { ...items[item], ...itemData, startingPrice: amount, endTime: endTime.toDate() };
       if (demo) {
         const now = new Date();
         items[item].endTime = new Date(
@@ -34,8 +35,8 @@ export const unflattenItems = (doc, demo) => {
           now.getMonth(),
           now.getDate(),
           now.getHours(),
-          items[item].endTime.toDate().getMinutes(),
-          items[item].endTime.toDate().getSeconds()
+          items[item].endTime.getMinutes(),
+          items[item].endTime.getSeconds()
         );
       }
     } else {
