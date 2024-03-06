@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true   
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
