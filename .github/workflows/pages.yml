@@ -13,16 +13,13 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [18, 20, 21]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.version }}
+          node-version: '21'
           cache: 'npm'
       - name: Install dependencies
         run: |
@@ -31,17 +28,13 @@ jobs:
       - name: Build
         run: npm run build
       - name: Setup Pages
-        if: github.ref == 'refs/heads/main' && matrix.version == '21'
         uses: actions/configure-pages@v4
       - name: Upload artifact
-        if: github.ref == 'refs/heads/main' && matrix.version == '21'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: './dist'
 
   deploy:
-    # Only deploy on main branch
-    if: github.ref == 'refs/heads/main'
     needs: build
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
