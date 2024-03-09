@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { ModalsContext } from "../contexts/ModalsProvider";
@@ -10,13 +10,15 @@ const Navbar = ({ admin }) => {
   const openModal = useContext(ModalsContext).openModal;
   const navigate = useNavigate();
   const [user, setUser] = useState("");
-  const [buttonText, setButtonText] = useState("Sign up");
+  const [authButtonText, setAuthButtonText] = useState("Sign up");
+  const [adminButtonText, setAdminButtonText] = useState("Admin");
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.displayName != null) {
         setUser(`Hi ${user.displayName}`);
-        setButtonText("Sign out");
+        setAuthButtonText("Sign out");
       }
     });
 
@@ -24,14 +26,20 @@ const Navbar = ({ admin }) => {
     return () => unsubscribe();
   }, [user.displayName]);
 
-  const handleNavigate = () => {
-    navigate(import.meta.env.BASE_URL + "admin");
+  const handleAdmin = () => {
+    if (location.pathname.includes("admin")) {
+      navigate(import.meta.env.BASE_URL);
+      setAdminButtonText("Admin");
+    } else {
+      navigate(import.meta.env.BASE_URL + "admin");
+      setAdminButtonText("Home");
+    }
   };
 
-  const handleSignInOut = () => {
+  const handleAuth = () => {
     if (user) {
       setUser("");
-      setButtonText("Sign up");
+      setAuthButtonText("Sign up");
     } else {
       openModal(ModalTypes.SIGN_UP);
     }
@@ -53,13 +61,9 @@ const Navbar = ({ admin }) => {
         <div className="row row-cols-auto">
           <div className="navbar-brand">{user}</div>
           {admin && (
-            <button onClick={handleNavigate} className="btn btn-secondary me-2">
-              Admin
-            </button>
+            <button onClick={handleAdmin} className="btn btn-secondary me-2">{adminButtonText}</button>
           )}
-          <button onClick={handleSignInOut} className="btn btn-secondary me-2">
-            {buttonText}
-          </button>
+          <button onClick={handleAuth} className="btn btn-secondary me-2">{authButtonText}</button>
         </div>
       </div>
     </nav>
