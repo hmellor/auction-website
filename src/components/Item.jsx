@@ -12,7 +12,6 @@ export const Item = ({ item }) => {
   const [bids, setBids] = useState(0);
   const [amount, setAmount] = useState(item.startingPrice);
   const [timeLeft, setTimeLeft] = useState("");
-  const [biddingComplete, setBiddingComplete] = useState(false);
 
   useEffect(() => {
     const status = itemStatus(item);
@@ -30,7 +29,6 @@ export const Item = ({ item }) => {
         requestAnimationFrame(updateTimer);
       } else {
         setTimeLeft("Item Ended");
-        setBiddingComplete(true);
       }
     };
 
