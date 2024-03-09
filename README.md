@@ -22,8 +22,10 @@ Realtime bidding using event listeners (no need to refresh page).
 
 Built with Bootstrap so everything is reactive:
 
-<img src="./readme/homepage_desktop.png" width=55%>
-<img src="./readme/homepage_mobile.png" width="19.1%">
+<p>
+  <img src="./readme/homepage_desktop.png" width=55%>
+  <img src="./readme/homepage_mobile.png" width="19.1%">
+</p>
 
 Device based login requiring only a username to be provided (no need to store sensitive information):
 
