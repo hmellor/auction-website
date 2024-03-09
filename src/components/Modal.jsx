@@ -26,12 +26,8 @@ const Modal = ({ type, title, children }) => {
       >
         <div className="modal-content">
           <div className="modal-header">
-            <h2 className="modal-title">{title}</h2>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={closeModal}
-            ></button>
+            <h5 className="modal-title">{title}</h5>
+            <button className="btn-close" onClick={closeModal} />
           </div>
           {children}
         </div>
