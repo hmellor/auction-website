@@ -45,7 +45,7 @@ export const Item = ({ item }) => {
 
   return (
     <div className="col">
-      <div className="card">
+      <div className="card h-100" onClick={() => openModal(ModalTypes.ITEM, item)}>
         <img
           src={primaryImageSrc}
           className="card-img-top"
@@ -53,41 +53,12 @@ export const Item = ({ item }) => {
         />
         <div className="card-body">
           <h5 className="title">{item.title}</h5>
-          <p className="card-subtitle">{item.subtitle}</p>
-
-          <table className="table">
-            <tbody>
-              <tr>
-                <th scope="row">Current bid:</th>
-                <td className="current-bid">
-                  {amount} [{bids} bids]
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Time left:</th>
-                <td className="time-left">{timeLeft}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="btn-group">
-            <button
-              onClick={() => openModal(ModalTypes.INFO, item)}
-              type="button"
-              className="btn btn-secondary"
-            >
-              Info
-            </button>
-            <button
-              disabled={biddingComplete}
-              onClick={() => openModal(ModalTypes.BID, item)}
-              type="button"
-              className="btn btn-primary"
-            >
-              Submit bid
-            </button>
-          </div>
+          <h6 className="card-subtitle mb-2 text-body-secondary">{item.subtitle}</h6>
         </div>
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item"><strong>{amount}</strong></li>
+          <li className="list-group-item">{bids} bids · {timeLeft}</li>
+        </ul>
       </div>
     </div>
   );

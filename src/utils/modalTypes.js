@@ -1,6 +1,5 @@
 export const ModalTypes = {
-  INFO: "info",
+  ITEM: "item",
   SIGN_UP: "signUp",
-  BID: "bid",
   NONE: null,
 };

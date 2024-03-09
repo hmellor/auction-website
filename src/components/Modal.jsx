@@ -26,12 +26,8 @@ const Modal = ({ type, title, children }) => {
       >
         <div className="modal-content">
           <div className="modal-header">
-            <h2 className="modal-title">{title}</h2>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={closeModal}
-            ></button>
+            <h5 className="modal-title">{title}</h5>
+            <button className="btn-close" onClick={closeModal} />
           </div>
           {children}
         </div>
@@ -47,9 +43,15 @@ Modal.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element)
 }
 
-const InfoModal = () => {
-  const { openModal, closeModal, activeItem } = useContext(ModalsContext);
+const ItemModal = () => {
+  const { activeItem, openModal, closeModal } = useContext(ModalsContext);
   const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
+  const minIncrease = 1;
+  const [bid, setBid] = useState();
+  const [valid, setValid] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [minBid, setMinBid] = useState("-.--");
 
   useEffect(() => {
     if (activeItem.secondaryImage === undefined) return;
@@ -58,28 +60,110 @@ const InfoModal = () => {
     })
   }, [activeItem.secondaryImage])
 
+  useEffect(() => {
+    const status = itemStatus(activeItem);
+    setMinBid(formatMoney(activeItem.currency, status.amount + minIncrease));
+  }, [activeItem]);
+
+  const delayedClose = () => {
+    setTimeout(() => {
+      closeModal();
+      setFeedback("");
+      setValid("");
+    }, 1000);
+  };
+
+  const handleSubmitBid = () => {
+    // Get bid submission time as early as possible
+    let nowTime = new Date().getTime();
+    // Disable bid submission while we submit the current request
+    setIsSubmitting(true);
+    // Ensure item has not already ended
+    if (activeItem.endTime - nowTime < 0) {
+      setFeedback("Sorry, this item has ended!");
+      setValid("is-invalid");
+      delayedClose();
+      setIsSubmitting(false);
+      return;
+    }
+    // Ensure user has provided a username
+    if (auth.currentUser.displayName == null) {
+      setFeedback("You must provide a username before bidding!");
+      setValid("is-invalid");
+      setTimeout(() => {
+        openModal(ModalTypes.SIGN_UP);
+        setIsSubmitting(false);
+        setValid("");
+      }, 1000)
+      return;
+    }
+    // Ensure input is a monetary value
+    if (!/^\d+(\.\d{1,2})?$/.test(bid)) {
+      setFeedback("Please enter a valid monetary amount!");
+      setValid("is-invalid");
+      setIsSubmitting(false);
+      return;
+    }
+    // Get values needed to place bid
+    const amount = parseFloat(bid);
+    const status = itemStatus(activeItem);
+    // Ensure input is large enough
+    if (amount < status.amount + minIncrease) {
+      setFeedback("You did not bid enough!");
+      setValid("is-invalid");
+      setIsSubmitting(false);
+      return;
+    }
+    // Finally, place bid
+    updateDoc(doc(db, "auction", "items"), {
+      [formatField(activeItem.id, status.bids + 1)]: {
+        amount,
+        uid: auth.currentUser.uid,
+      },
+    });
+    console.debug("handleSubmidBid() write to auction/items");
+    setValid("is-valid");
+    delayedClose();
+  };
+
+  const handleChange = (e) => {
+    setBid(e.target.value);
+    setIsSubmitting(false);
+    setValid("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !isSubmitting) {
+      handleSubmitBid();
+    }
+  };
+
   return (
-    <Modal type={ModalTypes.INFO} title={activeItem.title}>
+    <Modal type={ModalTypes.ITEM} title={activeItem.title}>
       <div className="modal-body">
         <p>{activeItem.detail}</p>
-        <img src={secondaryImageSrc} alt={activeItem.title} />
+        <img src={secondaryImageSrc} className="img-fluid" alt={activeItem.title} />
       </div>
-      <div className="modal-footer">
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={closeModal}
-        >
-          Close
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => openModal(ModalTypes.BID, activeItem)}
-          disabled={activeItem.endTime - new Date().getTime() < 0}
-        >
-          Submit bid
-        </button>
+      <div className="modal-footer justify-content-start">
+        <div className="input-group mb-2">
+          <span className="input-group-text">{activeItem.currency}</span>
+          <input
+            className={`form-control ${valid}`}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            />
+          <button
+            type="submit"
+            className="btn btn-primary"
+            onClick={handleSubmitBid}
+            disabled={isSubmitting}
+            >
+            Submit bid
+          </button>
+          <div className="invalid-feedback">{feedback}</div>
+        </div>
+        <label className="form-label">Enter {minBid} or more</label>
+        <p className="text-muted">(This is just a demo, you&apos;re not bidding real money)</p>
       </div>
     </Modal>
   );
@@ -147,124 +231,4 @@ const SignUpModal = () => {
   );
 };
 
-const BidModal = () => {
-  const { closeModal, activeItem } = useContext(ModalsContext);
-  const minIncrease = 1;
-  const [bid, setBid] = useState();
-  const [valid, setValid] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState("");
-  const [feedback, setFeedback] = useState("");
-  const [minBid, setMinBid] = useState("-.--");
-
-  useEffect(() => {
-    const status = itemStatus(activeItem);
-    setMinBid(formatMoney(activeItem.currency, status.amount + minIncrease));
-  }, [activeItem]);
-
-  const delayedClose = () => {
-    setTimeout(() => {
-      closeModal();
-      setFeedback("");
-      setValid("");
-    }, 1000);
-  };
-
-  const handleSubmitBid = () => {
-    // Get bid submission time as early as possible
-    let nowTime = new Date().getTime();
-    // Disable bid submission while we submit the current request
-    setIsSubmitting(true);
-    // Ensure item has not already ended
-    if (activeItem.endTime - nowTime < 0) {
-      setFeedback("Sorry, this item has ended!");
-      setValid("is-invalid");
-      delayedClose();
-      return;
-    }
-    // Ensure input is a monetary value
-    if (!/^\d+(\.\d{1,2})?$/.test(bid)) {
-      setFeedback("Please enter a valid monetary amount!");
-      setValid("is-invalid");
-      setIsSubmitting(false);
-      return;
-    }
-    // Get values needed to place bid
-    const amount = parseFloat(bid);
-    const status = itemStatus(activeItem);
-    // Ensure input is large enough
-    if (amount < status.amount + minIncrease) {
-      setFeedback("You did not bid enough!");
-      setValid("is-invalid");
-      setIsSubmitting(false);
-      return;
-    }
-    // Finally, place bid
-    updateDoc(doc(db, "auction", "items"), {
-      [formatField(activeItem.id, status.bids + 1)]: {
-        amount,
-        uid: auth.currentUser.uid,
-      },
-    });
-    console.debug("handleSubmidBid() write to auction/items");
-    setValid("is-valid");
-    delayedClose();
-  };
-
-  const handleChange = (e) => {
-    setBid(e.target.value);
-    setIsSubmitting(false);
-    setValid("");
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !isSubmitting) {
-      handleSubmitBid();
-    }
-  };
-
-  return (
-    <Modal type={ModalTypes.BID} title={"Place your bid"}>
-      <div className="modal-body">
-        <p>
-          You are about to place a bid on <strong>{activeItem.title}</strong>
-        </p>
-        <p className="text-muted">
-          (This is just a demo, you&apos;re not bidding real money)
-        </p>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div className="form-floating mb-3">
-            <input
-              autoFocus
-              id="amount-input"
-              type="amount"
-              className={`form-control ${valid}`}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-            />
-            <label>Enter {minBid} or more</label>
-            <div className="invalid-feedback">{feedback}</div>
-          </div>
-        </form>
-      </div>
-      <div className="modal-footer">
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={closeModal}
-        >
-          Close
-        </button>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          onClick={handleSubmitBid}
-          disabled={isSubmitting}
-        >
-          Submit bid
-        </button>
-      </div>
-    </Modal>
-  );
-};
-
-export { InfoModal, SignUpModal, BidModal };
+export { ItemModal, SignUpModal };

@@ -1,12 +1,11 @@
 import Grid from "../components/Grid";
-import { InfoModal, BidModal } from "../components/Modal";
+import { ItemModal } from "../components/Modal";
 
 function HomePage() {
   return (
     <div className="container mt-3">
       <Grid />
-      <InfoModal />
-      <BidModal />
+      <ItemModal />
     </div>
   );
 }
