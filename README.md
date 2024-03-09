@@ -6,7 +6,7 @@ This is a project I originally worked on for a charity event and I've been impro
 
 ## Table of contents
 - [Table of contents](#table-of-contents)
-- [Functionality](#functionality)
+- [Features](#features)
 - [Setup](#setup)
   - [Environment](#environment)
   - [Items](#items)
@@ -16,19 +16,26 @@ This is a project I originally worked on for a charity event and I've been impro
     - [Database](#database)
   - [Creating an admin account and initialising your auctions](#creating-an-admin-account-and-initialising-your-auctions)
 
-## Functionality
+## Features
 
-- Device based login requiring only a username to be provided (no need to store sensitive information).
-- Popups for more detailed descriptions and additional imagery.
-- Realtime bidding using event listeners (no need to refresh page).
-- Built with Bootstrap so everything is reactive.
-- Has a separate page for administrators to monitor the auction.
+Realtime bidding using event listeners (no need to refresh page).
 
+Built with Bootstrap so everything is reactive:
 
-| ![](./readme/homepage_desktop.png) | ![](./readme/loginpage.png) |
-|:---:|:---:|
-| ![](./readme/infopage.png) | ![](./readme/bidpage.png) |
-| <img src="./readme/homepage_mobile.png" width="50%"> | ![](./readme/adminpage.png) |
+<img src="./readme/homepage_desktop.png" width=55%>
+<img src="./readme/homepage_mobile.png" width="19.1%">
+
+Device based login requiring only a username to be provided (no need to store sensitive information):
+
+<img src="./readme/loginpage.png" width=74.3%>
+
+Popup additional item details and an additional image (same image was used for demo):
+
+<img src="./readme/bidpage.png" width=74.3%>
+
+Admin page for administrators to monitor the auction more easily and see who's winning:
+
+<img src="./readme/adminpage.png" width=74.3%>
 
 ## Setup
 Here we will cover how to add your own information to the auctions themselves, finally how to connect it all to Firebase to enable user login and bidding.
