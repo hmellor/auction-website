@@ -5,6 +5,7 @@ import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { ModalsContext } from "../contexts/ModalsProvider";
 import { ModalTypes } from "../utils/modalTypes";
+import { signOut } from "firebase/auth";
 
 const Navbar = ({ admin }) => {
   const openModal = useContext(ModalsContext).openModal;
@@ -38,8 +39,12 @@ const Navbar = ({ admin }) => {
 
   const handleAuth = () => {
     if (user) {
-      setUser("");
-      setAuthButtonText("Sign up");
+      signOut(auth).then(() => {
+        setUser("");
+        setAuthButtonText("Sign up");
+      }).catch((error) => {
+        console.error("Sign out error", error);
+      });
     } else {
       openModal(ModalTypes.SIGN_UP);
     }
