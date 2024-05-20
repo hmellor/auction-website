@@ -216,7 +216,7 @@ const SignUpModal = () => {
         </form>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-secondary">
+        <button type="button" className="btn btn-secondary" onClick={closeModal}>
           Cancel
         </button>
         <button
