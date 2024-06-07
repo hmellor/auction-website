@@ -35,7 +35,7 @@ export const unflattenItems = (doc, demo) => {
           now.getMonth(),
           now.getDate(),
           now.getHours(),
-          items[item].endTime.getMinutes(),
+          now.getMinutes() + items[item].endTime.getMinutes(),
           items[item].endTime.getSeconds()
         );
       }

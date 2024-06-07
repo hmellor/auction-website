@@ -6,7 +6,7 @@
   secondaryImage: DALL·E 2023-12-17 17.21.27 - A whimsical cat wearing a tiny wizard hat and cape, standing on its hind legs, with a background of twinkling stars and a crescent moon
   currency: £
   amount: 55
-  endTime: 2023-04-25T00:00:00+00:00
+  endTime: 2023-04-25T00:05:00+00:00
 
 - id: 1
   primaryImage: DALL·E 2023-12-17 17.21.44 - A playful cat lounging in a hammock, surrounded by lush green plants, with a relaxed expression and a tropical drink beside it
@@ -16,7 +16,7 @@
   secondaryImage: DALL·E 2023-12-17 17.21.44 - A playful cat lounging in a hammock, surrounded by lush green plants, with a relaxed expression and a tropical drink beside it
   currency: £
   amount: 60
-  endTime: 2023-04-25T00:05:00+00:00
+  endTime: 2023-04-25T00:10:00+00:00
 
 - id: 2
   primaryImage: DALL·E 2023-12-17 17.21.50 - A curious cat peering out of a spaceship window, with distant planets and stars visible in the background, giving a sense of wonder and explorat
@@ -26,7 +26,7 @@
   secondaryImage: DALL·E 2023-12-17 17.21.50 - A curious cat peering out of a spaceship window, with distant planets and stars visible in the background, giving a sense of wonder and explorat
   currency: £
   amount: 20
-  endTime: 2023-04-25T00:10:00+00:00
+  endTime: 2023-04-25T00:15:00+00:00
 
 - id: 3
   primaryImage: DALL·E 2023-12-17 17.21.53 - A cat dressed as a detective, complete with a trench coat and magnifying glass, standing in a dimly lit alleyway, looking mysterious and ready t
@@ -36,7 +36,7 @@
   secondaryImage: DALL·E 2023-12-17 17.21.53 - A cat dressed as a detective, complete with a trench coat and magnifying glass, standing in a dimly lit alleyway, looking mysterious and ready t
   currency: £
   amount: 0
-  endTime: 2023-04-25T00:15:00+00:00
+  endTime: 2023-04-25T00:20:00+00:00
 
 - id: 4
   primaryImage: DALL·E 2023-12-17 17.21.58 - A cat artist painting a masterpiece, surrounded by colorful paint tubes and brushes, with a beret on its head and a look of deep concentration
@@ -46,7 +46,7 @@
   secondaryImage: DALL·E 2023-12-17 17.21.58 - A cat artist painting a masterpiece, surrounded by colorful paint tubes and brushes, with a beret on its head and a look of deep concentration
   currency: £
   amount: 4
-  endTime: 2023-04-25T00:20:00+00:00
+  endTime: 2023-04-25T00:25:00+00:00
 
 - id: 5
   primaryImage: DALL·E 2023-12-17 17.22.00 - A majestic cat wearing a king's crown and robe, sitting on a luxurious throne with an expression of regal dignity, in a grand castle hall
@@ -56,7 +56,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.00 - A majestic cat wearing a king's crown and robe, sitting on a luxurious throne with an expression of regal dignity, in a grand castle hall
   currency: £
   amount: 0
-  endTime: 2023-04-25T00:25:00+00:00
+  endTime: 2023-04-25T00:30:00+00:00
 
 - id: 6
   primaryImage: DALL·E 2023-12-17 17.22.03 - A cat astronaut floating in space, with a tiny space helmet and a backdrop of a colorful nebula and twinkling stars, looking amazed by the cosmi
@@ -66,7 +66,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.03 - A cat astronaut floating in space, with a tiny space helmet and a backdrop of a colorful nebula and twinkling stars, looking amazed by the cosmi
   currency: £
   amount: 99
-  endTime: 2023-04-25T00:30:00+00:00
+  endTime: 2023-04-25T00:35:00+00:00
 
 - id: 7
   primaryImage: DALL·E 2023-12-17 17.22.07 - A cat chef cooking in a bustling kitchen, wearing a chef's hat and apron, surrounded by delicious food and kitchen utensils, looking focused and
@@ -76,7 +76,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.07 - A cat chef cooking in a bustling kitchen, wearing a chef's hat and apron, surrounded by delicious food and kitchen utensils, looking focused and
   currency: £
   amount: 0
-  endTime: 2023-04-25T00:35:00+00:00
+  endTime: 2023-04-25T00:40:00+00:00
 
 - id: 8
   primaryImage: DALL·E 2023-12-17 17.22.10 - A cat ninja stealthily moving through a moonlit garden, with a small sword and a mask, surrounded by blooming cherry blossoms and a tranquil pon
@@ -86,7 +86,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.10 - A cat ninja stealthily moving through a moonlit garden, with a small sword and a mask, surrounded by blooming cherry blossoms and a tranquil pon
   currency: £
   amount: 12
-  endTime: 2023-04-25T00:40:00+00:00
+  endTime: 2023-04-25T00:45:00+00:00
 
 - id: 9
   primaryImage: DALL·E 2023-12-17 17.22.12 - A cat pirate standing on the deck of a ship, with a pirate hat and an eye patch, holding a treasure map, with the ocean and a tropical island in
@@ -96,7 +96,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.12 - A cat pirate standing on the deck of a ship, with a pirate hat and an eye patch, holding a treasure map, with the ocean and a tropical island in
   currency: £
   amount: 6
-  endTime: 2023-04-25T00:45:00+00:00
+  endTime: 2023-04-25T00:50:00+00:00
 
 - id: 10
   primaryImage: DALL·E 2023-12-17 17.22.15 - A cat superhero flying through the city skyline, wearing a cape and a mask, with tall buildings and a setting sun in the background, looking her
@@ -106,7 +106,7 @@
   secondaryImage: DALL·E 2023-12-17 17.22.15 - A cat superhero flying through the city skyline, wearing a cape and a mask, with tall buildings and a setting sun in the background, looking her
   currency: £
   amount: 3
-  endTime: 2023-04-25T00:50:00+00:00
+  endTime: 2023-04-25T00:55:00+00:00
 
 - id: 11
   primaryImage: DALL·E 2023-12-17 17.22.17 - A cat relaxing on a sunny beach, with sunglasses, a sunhat, and a beach ball, surrounded by palm trees, with a clear blue ocean and a bright sky
@@ -116,4 +116,4 @@
   secondaryImage: DALL·E 2023-12-17 17.22.17 - A cat relaxing on a sunny beach, with sunglasses, a sunhat, and a beach ball, surrounded by palm trees, with a clear blue ocean and a bright sky
   currency: £
   amount: 7
-  endTime: 2023-04-25T00:55:00+00:00
+  endTime: 2023-04-25T01:00:00+00:00
