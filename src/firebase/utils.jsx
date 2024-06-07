@@ -54,6 +54,13 @@ export const editItems = (id = undefined, updateItems = false, deleteBids = fals
       // If ID was provided, place that item in an array by itself
       if (id !== undefined) items = [items.find((item) => item.id === id)];
 
+      // Make the user confirm they want to edit items
+      let action = updateItems? 'update item data' : (deleteBids ? 'delete all bids' : '');
+      let item = id === undefined ? 'all items' : `item ${id}`;
+      if (confirm(`You are about to ${action} for ${item}, are you sure?`) == false) {
+        return
+      }
+
       const docRef = doc(db, "auction", "items");
       getDoc(docRef)
         .then((doc) => {
