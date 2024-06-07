@@ -51,22 +51,16 @@ export const Row = ({ item }) => {
       <td>{timeLeft}</td>
       <td>
         <button
-          className="btn btn-primary me-3"
+          className="btn btn-warning me-3"
           onClick={() => editItems(item.id, true, false)}
         >
-          Update
+          Update item
         </button>
         <button
-          className="btn btn-primary me-3"
+          className="btn btn-danger me-3"
           onClick={() => editItems(item.id, false, true)}
         >
-          Reset
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => editItems(item.id, true, true)}
-        >
-          Update & Reset
+          Delete bids
         </button>
       </td>
     </tr>

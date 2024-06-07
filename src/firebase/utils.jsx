@@ -46,7 +46,7 @@ export const unflattenItems = (doc, demo) => {
   return Object.values(items);
 };
   
-export const editItems = (id = undefined, update = false, reset = false) => {
+export const editItems = (id = undefined, updateItems = false, deleteBids = false) => {
   fetch(import.meta.env.BASE_URL + "items.yml")
     .then((response) => response.text())
     .then((text) => yaml.load(text))
@@ -69,9 +69,9 @@ export const editItems = (id = undefined, update = false, reset = false) => {
             fields
               .filter((field) => parseField(field).item === newItem.id)
               .forEach((field) => {
-                if (update && parseField(field).bid === 0)
+                if (updateItems && parseField(field).bid === 0)
                   updates[field] = newItem;
-                if (reset && parseField(field).bid)
+                if (deleteBids && parseField(field).bid)
                   updates[field] = deleteField();
               });
           });
