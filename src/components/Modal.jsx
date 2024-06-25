@@ -47,6 +47,7 @@ const ItemModal = () => {
   const { activeItem, openModal, closeModal } = useContext(ModalsContext);
   const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
   const minIncrease = 1;
+  const maxIncrease = 10;
   const [bid, setBid] = useState();
   const [valid, setValid] = useState("");
   const [isSubmitting, setIsSubmitting] = useState("");
@@ -110,6 +111,13 @@ const ItemModal = () => {
     // Ensure input is large enough
     if (amount < status.amount + minIncrease) {
       setFeedback("You did not bid enough!");
+      setValid("is-invalid");
+      setIsSubmitting(false);
+      return;
+    }
+    // Ensure input is small enough
+    if (amount > status.amount + maxIncrease) {
+      setFeedback(`For the demo you can only increase the price up to ${activeItem.currency}${maxIncrease} per bid.`);
       setValid("is-invalid");
       setIsSubmitting(false);
       return;
