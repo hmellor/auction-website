@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router";
 import { auth } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
-import { ModalsContext } from "../contexts/ModalsProvider";
+import { ModalsContext } from "../contexts/ModalsContext";
 import { ModalTypes } from "../utils/modalTypes";
 
 const Navbar = ({ admin }) => {

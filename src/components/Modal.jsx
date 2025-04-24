@@ -6,7 +6,7 @@ import { formatField, formatMoney } from "../utils/formatString";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
-import { ModalsContext } from "../contexts/ModalsProvider";
+import { ModalsContext } from "../contexts/ModalsContext";
 import { ModalTypes } from "../utils/modalTypes";
 
 const Modal = ({ type, title, children }) => {

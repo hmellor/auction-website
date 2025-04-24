@@ -1,8 +1,7 @@
-import { createContext, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { ModalTypes } from "../utils/modalTypes";
-
-export const ModalsContext = createContext();
+import { ModalsContext } from "./ModalsContext";
 
 export const ModalsProvider = ({ children }) => {
   const [activeItem, setActiveItem] = useState({});

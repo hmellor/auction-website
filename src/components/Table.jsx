@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Row } from "./Row";
-import { ItemsContext } from "../contexts/ItemsProvider";
+import { ItemsContext } from "../contexts/ItemsContext";
 
 const Table = () => {
   const { items } = useContext(ItemsContext);

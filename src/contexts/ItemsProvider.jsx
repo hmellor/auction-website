@@ -1,10 +1,9 @@
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { db } from "../firebase/config";
 import { onSnapshot, doc, setDoc } from "firebase/firestore";
 import { unflattenItems } from "../firebase/utils";
-
-export const ItemsContext = createContext();
+import { ItemsContext } from "./ItemsContext";
 
 export const ItemsProvider = ({ demo, children }) => {
   const [items, setItems] = useState([]);

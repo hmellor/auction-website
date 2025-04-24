@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Item } from "./Item";
-import { ItemsContext } from "../contexts/ItemsProvider";
+import { ItemsContext } from "../contexts/ItemsContext";
 
 const Grid = () => {
   const { items } = useContext(ItemsContext);
