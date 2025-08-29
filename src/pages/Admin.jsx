@@ -1,3 +1,4 @@
+import React from "react";
 import { editItems } from "../firebase/utils";
 import Table from "../components/Table";
 
