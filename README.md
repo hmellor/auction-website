@@ -47,7 +47,7 @@ Here we will cover how to add your own information to the auctions themselves, f
 
 ### Environment
 
-To develop and deploy your own auction, you'll need to install Node.js v21. To do this, follow the instructions [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
+To develop and deploy your own auction, you'll need to install Node.js v22 (LTS). To do this, follow the instructions [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
 
 Then, install the required packages as follows:
 
