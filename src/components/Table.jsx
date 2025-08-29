@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Row } from "./Row";
 import { ItemsContext } from "../contexts/ItemsContext";
 
