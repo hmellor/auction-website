@@ -118,10 +118,18 @@ Next, navigate to the `Rules` tab and paste the following rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Checks that new data doesn't overwrite or delete an existing bid
-    function isFieldOverWrite() {
+    // Validate an incoming bid
+    function isValidBid() {
+      // Check existing bids are not being edited or deleted
       let editedKeys = request.resource.data.diff(resource.data);
-      return editedKeys.changedKeys().union(editedKeys.removedKeys()).size() > 0
+      let changedKeys = editedKeys.changedKeys();
+      let removedKeys = editedKeys.removedKeys();
+      let numModifiedKeys = changedKeys.union(removedKeys).size();
+      // Check there is only 1 new bid
+      let addedKeys = editedKeys.addedKeys();
+      let numAddedKeys = addedKeys.size();
+      return numModifiedKeys == 0
+        && numAddedKeys == 1;
     }
     // Checks user has anonymous account and has "signed up" (i.e. provided a displayName)
     function isLoggedIn() {
@@ -138,11 +146,13 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin() || request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
     }
-    // Auction can always be read, updated only if the user is logged in and
-    // isn't overwiting someone else's bid, and created or deleted by admins
+    // Auction items can be:
+    // - read by anyone
+    // - updated only if the user is logged in and the bid is valid
+    // - created or deleted by admins
     match /auction/items {
       allow get, list: if true;
-      allow update : if isAdmin() || isLoggedIn() && !isFieldOverWrite()
+      allow update : if isAdmin() || isLoggedIn() && isValidBid()
       allow create, delete: if isAdmin();
     }
   }
